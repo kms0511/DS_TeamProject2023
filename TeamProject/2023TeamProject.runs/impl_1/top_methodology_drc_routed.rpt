@@ -1,0 +1,129 @@
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
+-----------------------------------------------------------------------------------------------------------------------------------------------
+| Tool Version : Vivado v.2022.2 (win64) Build 3671981 Fri Oct 14 05:00:03 MDT 2022
+| Date         : Fri Nov 24 17:13:27 2023
+| Host         : TeddyLaptop running 64-bit major release  (build 9200)
+| Command      : report_methodology -file top_methodology_drc_routed.rpt -pb top_methodology_drc_routed.pb -rpx top_methodology_drc_routed.rpx
+| Design       : top
+| Device       : xc7z020clg484-1
+| Speed File   : -1
+| Design State : Fully Routed
+-----------------------------------------------------------------------------------------------------------------------------------------------
+
+Report Methodology
+
+Table of Contents
+-----------------
+1. REPORT SUMMARY
+2. REPORT DETAILS
+
+1. REPORT SUMMARY
+-----------------
+            Netlist: netlist
+          Floorplan: design_1
+      Design limits: <entire design considered>
+             Max violations: <unlimited>
+             Violations found: 16
++-----------+----------+----------------------------------+------------+
+| Rule      | Severity | Description                      | Violations |
++-----------+----------+----------------------------------+------------+
+| HPDR-1    | Warning  | Port pin direction inconsistency | 4          |
+| LUTAR-1   | Warning  | LUT drives async reset alert     | 2          |
+| TIMING-20 | Warning  | Non-clocked latch                | 9          |
+| LATCH-1   | Advisory | Existing latches in the design   | 1          |
++-----------+----------+----------------------------------+------------+
+
+2. REPORT DETAILS
+-----------------
+HPDR-1#1 Warning
+Port pin direction inconsistency  
+Hierarchical port(pin) key_io[0] direction INOUT is not consistent with the directions of the cell pins/ports found at that level of the netlist hierarchy. Please review the design and consider changing the port(pin) direction. Both drivers and loads were expected for the net (key_io[0]) connected to this Port, but both were not found.
+Related violations: <none>
+
+HPDR-1#2 Warning
+Port pin direction inconsistency  
+Hierarchical port(pin) key_io[1] direction INOUT is not consistent with the directions of the cell pins/ports found at that level of the netlist hierarchy. Please review the design and consider changing the port(pin) direction. Both drivers and loads were expected for the net (key_io[1]) connected to this Port, but both were not found.
+Related violations: <none>
+
+HPDR-1#3 Warning
+Port pin direction inconsistency  
+Hierarchical port(pin) key_io[2] direction INOUT is not consistent with the directions of the cell pins/ports found at that level of the netlist hierarchy. Please review the design and consider changing the port(pin) direction. Both drivers and loads were expected for the net (key_io[2]) connected to this Port, but both were not found.
+Related violations: <none>
+
+HPDR-1#4 Warning
+Port pin direction inconsistency  
+Hierarchical port(pin) key_io[3] direction INOUT is not consistent with the directions of the cell pins/ports found at that level of the netlist hierarchy. Please review the design and consider changing the port(pin) direction. Both drivers and loads were expected for the net (key_io[3]) connected to this Port, but both were not found.
+Related violations: <none>
+
+LUTAR-1#1 Warning
+LUT drives async reset alert  
+LUT cell graph_inst/next_bar_y_reg[9]_i_2, with 2 or more inputs, drives asynchronous preset/clear pin(s) graph_inst/next_bar_y_reg[1]/CLR, graph_inst/next_bar_y_reg[2]/PRE,
+graph_inst/next_bar_y_reg[3]/PRE, graph_inst/next_bar_y_reg[4]/CLR,
+graph_inst/next_bar_y_reg[5]/CLR, graph_inst/next_bar_y_reg[6]/PRE,
+graph_inst/next_bar_y_reg[7]/PRE, graph_inst/next_bar_y_reg[8]/CLR
+graph_inst/next_bar_y_reg[9]/CLR. The LUT may glitch and trigger an unexpected reset, even if it is a properly timed path.
+Related violations: <none>
+
+LUTAR-1#2 Warning
+LUT drives async reset alert  
+LUT cell keypad_inst/sclk[31]_i_2, with 2 or more inputs, drives asynchronous preset/clear pin(s) sync_inst/c_h_reg[5]/CLR, sync_inst/c_h_reg[6]/CLR,
+sync_inst/c_h_reg[7]/CLR, sync_inst/c_h_reg[8]/CLR,
+sync_inst/c_h_reg[9]/CLR, sync_inst/c_v_reg[0]/CLR,
+sync_inst/c_v_reg[1]/CLR, sync_inst/c_v_reg[2]/CLR,
+sync_inst/c_v_reg[3]/CLR, sync_inst/c_v_reg[4]/CLR,
+sync_inst/c_v_reg[5]/CLR, sync_inst/c_v_reg[6]/CLR,
+sync_inst/c_v_reg[7]/CLR, sync_inst/c_v_reg[8]/CLR,
+sync_inst/c_v_reg[9]/CLR (the first 15 of 132 listed). The LUT may glitch and trigger an unexpected reset, even if it is a properly timed path.
+Related violations: <none>
+
+TIMING-20#1 Warning
+Non-clocked latch  
+The latch graph_inst/next_bar_y_reg[1] cannot be properly analyzed as its control pin graph_inst/next_bar_y_reg[1]/G is not reached by a timing clock
+Related violations: <none>
+
+TIMING-20#2 Warning
+Non-clocked latch  
+The latch graph_inst/next_bar_y_reg[2] cannot be properly analyzed as its control pin graph_inst/next_bar_y_reg[2]/G is not reached by a timing clock
+Related violations: <none>
+
+TIMING-20#3 Warning
+Non-clocked latch  
+The latch graph_inst/next_bar_y_reg[3] cannot be properly analyzed as its control pin graph_inst/next_bar_y_reg[3]/G is not reached by a timing clock
+Related violations: <none>
+
+TIMING-20#4 Warning
+Non-clocked latch  
+The latch graph_inst/next_bar_y_reg[4] cannot be properly analyzed as its control pin graph_inst/next_bar_y_reg[4]/G is not reached by a timing clock
+Related violations: <none>
+
+TIMING-20#5 Warning
+Non-clocked latch  
+The latch graph_inst/next_bar_y_reg[5] cannot be properly analyzed as its control pin graph_inst/next_bar_y_reg[5]/G is not reached by a timing clock
+Related violations: <none>
+
+TIMING-20#6 Warning
+Non-clocked latch  
+The latch graph_inst/next_bar_y_reg[6] cannot be properly analyzed as its control pin graph_inst/next_bar_y_reg[6]/G is not reached by a timing clock
+Related violations: <none>
+
+TIMING-20#7 Warning
+Non-clocked latch  
+The latch graph_inst/next_bar_y_reg[7] cannot be properly analyzed as its control pin graph_inst/next_bar_y_reg[7]/G is not reached by a timing clock
+Related violations: <none>
+
+TIMING-20#8 Warning
+Non-clocked latch  
+The latch graph_inst/next_bar_y_reg[8] cannot be properly analyzed as its control pin graph_inst/next_bar_y_reg[8]/G is not reached by a timing clock
+Related violations: <none>
+
+TIMING-20#9 Warning
+Non-clocked latch  
+The latch graph_inst/next_bar_y_reg[9] cannot be properly analyzed as its control pin graph_inst/next_bar_y_reg[9]/G is not reached by a timing clock
+Related violations: <none>
+
+LATCH-1#1 Advisory
+Existing latches in the design  
+There are 9 latches found in the design. Inferred latches are often the result of HDL coding mistakes, such as incomplete if or case statements.
+Related violations: <none>
+
+

@@ -13,7 +13,7 @@ module top(
     );
 wire clk, rst, locked;  
 wire [9:0] x, y; 
-wire [2:0] rgb;
+wire [11:0] rgb;
 wire video_on; 
 wire [4:0] key_tmp, key, key_pulse;
 /////////////////////////////////
@@ -22,9 +22,9 @@ assign rst = reset_poweron | (~locked);
 keypad #(.CLK_KHZ(25175)) keypad_inst (clk, rst, key_io[7:4], key_io[3:0], key_tmp); 
 debounce #(.SIZE(16), .BTN_WIDTH(5)) debounce_inst (clk, rst, key_tmp, key, key_pulse); 
 
-assign red = (video_on==1)? {4{rgb[2]}} : 0;  
-assign green= (video_on==1)? {4{rgb[1]}} : 0;
-assign blue = (video_on==1)? {4{rgb[0]}} : 0;
+assign red =  (video_on==1)? {rgb[11:8]} : 0;
+assign green= (video_on==1)? {rgb[7:4]} : 0;
+assign blue = (video_on==1)? {rgb[3:0]} : 0;
 
 // drawing module
 graph_mod graph_inst(clk, rst, x, y, key, key_pulse, rgb);

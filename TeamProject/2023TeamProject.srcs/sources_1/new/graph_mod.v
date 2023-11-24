@@ -25,7 +25,7 @@ parameter BALL_V = 4; //ball의 속도
 input clk, rst;
 input [9:0] x, y;
 input [4:0] key, key_pulse; 
-output [2:0] rgb; 
+output [11:0] rgb; 
 
 wire frame_tick; 
 
@@ -48,6 +48,16 @@ assign frame_tick = (y==MAX_Y-1 && x==MAX_X-1)? 1 : 0; // 매 프레임마다 한 clk �
 
 // wall
 assign wall_on = (x>=WALL_X_L && x<=WALL_X_R)? 1 : 0; //wall이 있는 영역
+
+/*---------------------------------------------------------*/
+// circle test
+/*---------------------------------------------------------*/
+wire circle_on;
+circle circle_test(.x(x), .y(y), .cir_x(200), .cir_y(200), .cir_r(10), .cir_rgb({4'd15,4'd15,4'd15}), .circle_on(circle_on));
+
+
+
+
 
 /*---------------------------------------------------------*/
 // bar의 위치 결정
@@ -304,13 +314,14 @@ end
 /*---------------------------------------------------------*/
 // color setting
 /*---------------------------------------------------------*/
-assign rgb = (font_bit & score_on)? 3'b001 : //blue text
-             (font_bit & life_on)? 3'b001 : //blue text
-             (font_bit & over_on)? 3'b001 : //blue text
-             (wall_on)? 3'b001 : //blue wall
-             (bar_on)? 3'b010 : // green bar
-             (ball_on)? 3'b100 : // red ball
-             3'b110; //yellow background
+assign rgb = (font_bit & score_on)? {4'd0,  4'd0,   4'd15} : //blue text
+             (font_bit & life_on)?  {4'd0,  4'd0,   4'd15} : //blue text
+             (font_bit & over_on)?  {4'd0,  4'd0,   4'd15} : //blue text
+             (wall_on)?             {4'd0,  4'd0,   4'd15} : //blue wall
+             (bar_on)?              {4'd0,  4'd15,  4'd0} : // green bar
+             (ball_on)?             {4'd15, 4'd0,   4'd0} : // red ball
+             (circle_on)?           {4'd15, 4'd15,  4'd15} : // circle_test
+                                    {4'd15, 4'd15,  4'd0}; //yellow background
   
 
 endmodule
