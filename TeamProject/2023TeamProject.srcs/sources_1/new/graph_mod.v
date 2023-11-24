@@ -2,6 +2,17 @@
 
 module graph_mod (clk, rst, x, y, key, key_pulse, rgb);
 
+parameter RGB_RED =     {4'd15,  4'd0,  4'd0};
+parameter RGB_ORANGE =  {4'd15,  4'd9,  4'd0};
+parameter RGB_YELLOW =  {4'd15,  4'd15, 4'd0};
+parameter RGB_GREEN =   {4'd0,   4'd15, 4'd0};
+parameter RGB_CYAN =    {4'd0,   4'd15, 4'd15};
+parameter RGB_BLUE =    {4'd0,   4'd0,  4'd15};
+parameter RGB_WHITE =   {4'd15,  4'd15, 4'd15};
+parameter RGB_BLACK =   {4'd0,   4'd0,  4'd0};
+
+parameter RGB_JAHONG =  {4'd13,   4'd0, 4'd1};
+parameter RGB_SKY =     {4'd0,   4'd9, 4'd14};
 // 화면 크기 설정
 parameter MAX_X = 640; 
 parameter MAX_Y = 480;  
@@ -28,6 +39,10 @@ parameter WALL2_Y_D = 479;
 parameter TARGET_X_C = 318; 
 parameter TARGET_Y_C = 100;
 
+parameter TARGET0_COLOR = {RGB_SKY};
+parameter TARGET1_COLOR = {RGB_WHITE};
+parameter TARGET2_COLOR = {RGB_JAHONG};
+parameter TARGET3_COLOR = {RGB_WHITE};
 //target0 의 좌표 설정
 // parameter TARGET0_X_L = 259; 
 // parameter TARGET0_X_R = 378;
@@ -105,7 +120,8 @@ output [11:0] rgb;
 
 wire frame_tick; 
 
-wire [2:0] wall_on,target_on;
+wire [2:0] wall_on;
+wire [3:0] target_on;
 wire [4:0] gaugebar_on;
 wire gaugeshow_on, gaugeguide_on;
 //wire bar_on, ball_on; 
@@ -135,13 +151,11 @@ assign wall_on[2] = (x>=WALL2_X_L && x<=WALL2_X_R && y>=WALL2_Y_U && y<=WALL2_Y_
 // assign target_on[1] = (x>=TARGET1_X_L && x<=TARGET1_X_R && y>=TARGET1_Y_U && y<=TARGET1_Y_D)? 1 : 0; //target이 있는 영역
 // assign target_on[2] = (x>=TARGET2_X_L && x<=TARGET2_X_R && y>=TARGET2_Y_U && y<=TARGET2_Y_D)? 1 : 0; //target이 있는 영역
 
-
-circle target0(.x(x), .y(y), .cir_x(TARGET_X_C), .cir_y(TARGET_Y_C), .cir_r(60), .cir_rgb({4'd15,4'd15,4'd15}), .circle_on(target_on[0]));
-circle target1(.x(x), .y(y), .cir_x(TARGET_X_C), .cir_y(TARGET_Y_C), .cir_r(35), .cir_rgb({4'd15,4'd15,4'd15}), .circle_on(target_on[1]));
-circle target2(.x(x), .y(y), .cir_x(TARGET_X_C), .cir_y(TARGET_Y_C), .cir_r(10), .cir_rgb({4'd15,4'd15,4'd15}), .circle_on(target_on[2]));
-
-
-
+//숫자 큰 원이 작은 원, 점수가 큼
+circle target3(.x(x), .y(y), .cir_x(TARGET_X_C), .cir_y(TARGET_Y_C), .cir_r(10), .cir_rgb({4'd15,4'd15,4'd15}), .circle_on(target_on[3]));
+circle target2(.x(x), .y(y), .cir_x(TARGET_X_C), .cir_y(TARGET_Y_C), .cir_r(30), .cir_rgb({4'd15,4'd15,4'd15}), .circle_on(target_on[2]));
+circle target1(.x(x), .y(y), .cir_x(TARGET_X_C), .cir_y(TARGET_Y_C), .cir_r(50), .cir_rgb({4'd15,4'd15,4'd15}), .circle_on(target_on[1]));
+circle target0(.x(x), .y(y), .cir_x(TARGET_X_C), .cir_y(TARGET_Y_C), .cir_r(70), .cir_rgb({4'd15,4'd15,4'd15}), .circle_on(target_on[0]));
 
 //gauge bar
 assign gaugeshow_on = (x>=GAUGESHOW_X_L && x<=GAUGESHOW_X_R && y>=GAUGESHOW_Y_U && y<=GAUGESHOW_Y_D)? 1 : 0; //gaugebar 표시가 있는 영역
@@ -157,10 +171,6 @@ assign gaugeguide_on = (x>=GAUGEGUIDE_X_L && x<=GAUGEGUIDE_X_R && y>=GAUGEGUIDE_
 /*---------------------------------------------------------*/
 wire circle_on;
 circle circle_test(.x(x), .y(y), .cir_x(200), .cir_y(200), .cir_r(15), .cir_rgb({4'd15,4'd15,4'd15}), .circle_on(circle_on));
-
-
-
-
 
 /*---------------------------------------------------------*/
 // bar의 위치 결정
@@ -423,9 +433,10 @@ assign rgb = (font_bit & score_on)? {4'd0,  4'd0,   4'd15} : //blue text
              (wall_on[0])?          {4'd0,  4'd0,   4'd15} : //blue wall
              (wall_on[1])?          {4'd0,  4'd0,   4'd15} : //blue wall
              (wall_on[2])?          {4'd0,  4'd0,   4'd15} : //blue wall
-             (target_on[2])?        {4'd15,  4'd0,   4'd0} : //red target
-             (target_on[1])?        {4'd15,  4'd9,   4'd0} : //orange target
-             (target_on[0])?        {4'd0,  4'd15,   4'd0} : //green target
+             (target_on[3])?        TARGET3_COLOR : //SMALLEST target
+             (target_on[2])?        TARGET2_COLOR :
+             (target_on[1])?        TARGET1_COLOR :
+             (target_on[0])?        TARGET0_COLOR : //LARGEST target
              (gaugeguide_on)?       {4'd0,  4'd0,   4'd0} : //gauge guide bar                    
              (gaugeshow_on)?        {4'd0,  4'd0,   4'd0} : //black gauge bar          
              (gaugebar_on[0])?      {4'd0,  4'd0,   4'd15} : //blue gauge bar
