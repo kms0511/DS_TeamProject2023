@@ -412,8 +412,8 @@ assign rgb = (font_bit & score_on)? {4'd0,  4'd0,   4'd15} : //blue text
              (wall_on[1])? {4'd0,  4'd0,   4'd15} :  //blue wall
              (wall_on[2])? {4'd0,  4'd0,   4'd15} : //blue wall
              (target_on[2])? {4'd15,  4'd0,   4'd0} : //red target
-             (target_on[1])? {4'd15,  4'd9,   4'd0} : //orange target
-             (target_on[0])? {4'd0,  4'd15,   4'd0} : //green target
+             (target_on[1])? {4'd12,  4'd15,   4'd15} : //orange target
+             (target_on[0])? {4'd0,  4'd8,   4'd10} : //green target
              (gaugeguide_on)? {4'd0,  4'd0,   4'd0} : //gauge guide bar                    
              (gaugeshow_on)? {4'd0,  4'd0,   4'd0} : //black gauge bar          
              (gaugebar_on[0])? {4'd0,  4'd0,   4'd15} : //blue gauge bar
