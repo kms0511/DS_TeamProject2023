@@ -152,10 +152,10 @@ assign wall_on[2] = (x>=WALL2_X_L && x<=WALL2_X_R && y>=WALL2_Y_U && y<=WALL2_Y_
 // assign target_on[2] = (x>=TARGET2_X_L && x<=TARGET2_X_R && y>=TARGET2_Y_U && y<=TARGET2_Y_D)? 1 : 0; //target이 있는 영역
 
 //숫자 큰 원이 작은 원, 점수가 큼
-circle target3(.x(x), .y(y), .cir_x(TARGET_X_C), .cir_y(TARGET_Y_C), .cir_r(10), .cir_rgb({4'd15,4'd15,4'd15}), .circle_on(target_on[3]));
-circle target2(.x(x), .y(y), .cir_x(TARGET_X_C), .cir_y(TARGET_Y_C), .cir_r(30), .cir_rgb({4'd15,4'd15,4'd15}), .circle_on(target_on[2]));
-circle target1(.x(x), .y(y), .cir_x(TARGET_X_C), .cir_y(TARGET_Y_C), .cir_r(50), .cir_rgb({4'd15,4'd15,4'd15}), .circle_on(target_on[1]));
-circle target0(.x(x), .y(y), .cir_x(TARGET_X_C), .cir_y(TARGET_Y_C), .cir_r(70), .cir_rgb({4'd15,4'd15,4'd15}), .circle_on(target_on[0]));
+circle target3(.x(x), .y(y), .cir_x(TARGET_X_C), .cir_y(TARGET_Y_C), .cir_r(15), .cir_rgb(), .circle_on(target_on[3]));
+circle target2(.x(x), .y(y), .cir_x(TARGET_X_C), .cir_y(TARGET_Y_C), .cir_r(30), .cir_rgb(), .circle_on(target_on[2]));
+circle target1(.x(x), .y(y), .cir_x(TARGET_X_C), .cir_y(TARGET_Y_C), .cir_r(60), .cir_rgb(), .circle_on(target_on[1]));
+circle target0(.x(x), .y(y), .cir_x(TARGET_X_C), .cir_y(TARGET_Y_C), .cir_r(90), .cir_rgb(), .circle_on(target_on[0]));
 
 //gauge bar
 assign gaugeshow_on = (x>=GAUGESHOW_X_L && x<=GAUGESHOW_X_R && y>=GAUGESHOW_Y_U && y<=GAUGESHOW_Y_D)? 1 : 0; //gaugebar 표시가 있는 영역
