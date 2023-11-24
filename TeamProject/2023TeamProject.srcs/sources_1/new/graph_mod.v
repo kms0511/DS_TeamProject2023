@@ -48,6 +48,11 @@ parameter MVBAR_X_R = 469;
 parameter MVBAR_Y_U = 448; 
 parameter MVBAR_Y_D = 449;
 
+//gaugebarguide 의 좌표설정
+parameter GAUGEGUIDE_X_L = 170; 
+parameter GAUGEGUIDE_X_R = 469;
+parameter GAUGEGUIDE_Y_U = 446; 
+parameter GAUGEGUIDE_Y_D = 447;
 //gauge bar move 의 좌표설정
 parameter GAUGESHOW_X_L = 170; 
 parameter GAUGESHOW_X_R = 173;
@@ -92,13 +97,13 @@ parameter GAUGEBAR4_Y_D = 479;
 input clk, rst;
 input [9:0] x, y;
 input [4:0] key, key_pulse; 
-output [2:0] rgb; 
+output [11:0] rgb; 
 
 wire frame_tick; 
 
 wire [2:0] wall_on,target_on;
 wire [4:0] gaugebar_on;
-wire gaugeshow_on;
+wire gaugeshow_on, gaugeguide_on;
 //wire bar_on, ball_on; 
 //wire [9:0] bar_y_t, bar_y_b; 
 //reg [9:0] current_bar_y, next_bar_y; 
@@ -133,6 +138,22 @@ assign gaugebar_on[1] = (x>=GAUGEBAR1_X_L && x<=GAUGEBAR1_X_R && y>=GAUGEBAR1_Y_
 assign gaugebar_on[2] = (x>=GAUGEBAR2_X_L && x<=GAUGEBAR2_X_R && y>=GAUGEBAR2_Y_U && y<=GAUGEBAR2_Y_D)? 1 : 0; //gaugebar가 있는 영역
 assign gaugebar_on[3] = (x>=GAUGEBAR3_X_L && x<=GAUGEBAR3_X_R && y>=GAUGEBAR3_Y_U && y<=GAUGEBAR3_Y_D)? 1 : 0; //gaugebar가 있는 영역
 assign gaugebar_on[4] = (x>=GAUGEBAR4_X_L && x<=GAUGEBAR4_X_R && y>=GAUGEBAR4_Y_U && y<=GAUGEBAR4_Y_D)? 1 : 0; //gaugebar가 있는 영역
+assign gaugeguide_on = (x>=GAUGEGUIDE_X_L && x<=GAUGEGUIDE_X_R && y>=GAUGEGUIDE_Y_U && y<=GAUGEGUIDE_Y_D)? 1 : 0; //gaugebar guide가 있는 영역
+
+/*---------------------------------------------------------*/
+// circle test
+/*---------------------------------------------------------*/
+wire circle_on;
+circle circle_test(.x(x), .y(y), 
+                .cir_x(200), .cir_y(200), .cir_r(10), 
+                .cir_rgb({4'd15,4'd15,4'd15}), .circle_on(circle_on)
+                );
+
+
+
+
+
+
 
 /*---------------------------------------------------------*/
 // bar의 위치 결정
@@ -389,21 +410,22 @@ end
 /*---------------------------------------------------------*/
 // color setting
 /*---------------------------------------------------------*/
-assign rgb = (font_bit & score_on)? 3'b001 : //blue text
-             (font_bit & life_on)? 3'b001 : //blue text
-             (font_bit & over_on)? 3'b001 : //blue text
-             (wall_on[0])? 3'b001 : //blue wall
-             (wall_on[1])? 3'b001 : //blue wall
-             (wall_on[2])? 3'b001 : //blue wall
-             (target_on[2])? 3'b100 : //red target
-             (target_on[1])? 3'b110 : //orange target
-             (target_on[0])? 3'b001 : //green target
-             (gaugeshow_on)? 3'b000 : //gauge bar          
-             (gaugebar_on[0])? 3'b001 : //gauge bar
-             (gaugebar_on[1])? 3'b010 : //gauge bar
-             (gaugebar_on[2])? 3'b101 : //gauge bar
-             (gaugebar_on[3])? 3'b110 : //gauge bar
-             (gaugebar_on[4])? 3'b100 : //gauge bar
+assign rgb = (font_bit & score_on)? {4'd0,  4'd0,   4'd15} : //blue text
+             (font_bit & life_on)? {4'd0,  4'd0,   4'd15} : //blue text
+             (font_bit & over_on)? {4'd0,  4'd0,   4'd15} : //blue text
+             (wall_on[0])? {4'd0,  4'd0,   4'd15} : //blue wall
+             (wall_on[1])? {4'd0,  4'd0,   4'd15} :  //blue wall
+             (wall_on[2])? {4'd0,  4'd0,   4'd15} : //blue wall
+             (target_on[2])? {4'd15,  4'd0,   4'd0} : //red target
+             (target_on[1])? {4'd15,  4'd9,   4'd0} : //orange target
+             (target_on[0])? {4'd0,  4'd15,   4'd0} : //green target
+             (gaugeguide_on)? {4'd0,  4'd0,   4'd0} : //gauge guide bar                    
+             (gaugeshow_on)? {4'd0,  4'd0,   4'd0} : //black gauge bar          
+             (gaugebar_on[0])? {4'd0,  4'd0,   4'd15} : //blue gauge bar
+             (gaugebar_on[1])? {4'd0,  4'd15,   4'd0} : //green gauge bar
+             (gaugebar_on[2])? {4'd15,  4'd15,   4'd0} : //yellow gauge bar
+             (gaugebar_on[3])? {4'd15,  4'd9,   4'd0} : //orange gauge bar
+             (gaugebar_on[4])? {4'd15,  4'd0,   4'd0} : //red gauge bar
 //             (bar_on)? 3'b010 : // green bar
 //             (ball_on)? 3'b100 : // red ball
              3'b111; //white background

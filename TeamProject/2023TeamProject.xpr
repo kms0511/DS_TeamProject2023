@@ -3,7 +3,7 @@
 <!--                                                         -->
 <!-- Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.   -->
 
-<Project Version="7" Minor="61" Path="C:/Xilinx/DS_TeamProject2023/TeamProject/2023TeamProject.xpr">
+<Project Version="7" Minor="61" Path="D:/Xilinx/DS/DS_TeamProject2023/TeamProject/2023TeamProject.xpr">
   <DefaultLaunch Dir="$PRUNDIR"/>
   <Configuration>
     <Option Name="Id" Val="54a4f023a647485b990de6e3129cc63b"/>
