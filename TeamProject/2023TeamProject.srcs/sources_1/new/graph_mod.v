@@ -144,7 +144,7 @@ assign gaugeguide_on = (x>=GAUGEGUIDE_X_L && x<=GAUGEGUIDE_X_R && y>=GAUGEGUIDE_
 // circle test
 /*---------------------------------------------------------*/
 wire circle_on;
-circle circle_test(.x(x), .y(y), .cir_x(200), .cir_y(200), .cir_r(10), .cir_rgb({4'd15,4'd15,4'd15}), .circle_on(circle_on));
+circle circle_test(.x(x), .y(y), .cir_x(200), .cir_y(200), .cir_r(15), .cir_rgb({4'd15,4'd15,4'd15}), .circle_on(circle_on));
 
 
 
@@ -409,7 +409,7 @@ assign rgb = (font_bit & score_on)? {4'd0,  4'd0,   4'd15} : //blue text
              (font_bit & life_on)?  {4'd0,  4'd0,   4'd15} : //blue text
              (font_bit & over_on)?  {4'd0,  4'd0,   4'd15} : //blue text
              (wall_on[0])?          {4'd0,  4'd0,   4'd15} : //blue wall
-             (wall_on[1])?          {4'd0,  4'd0,   4'd15} :  //blue wall
+             (wall_on[1])?          {4'd0,  4'd0,   4'd15} : //blue wall
              (wall_on[2])?          {4'd0,  4'd0,   4'd15} : //blue wall
              (target_on[2])?        {4'd15,  4'd0,   4'd0} : //red target
              (target_on[1])?        {4'd15,  4'd9,   4'd0} : //orange target
