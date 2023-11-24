@@ -5,8 +5,8 @@ input [11:0] cir_rgb,
 output circle_on
     );
 
-assign distance = (((cir_x-x)*(cir_x-x))+ ((cir_y-y)*(cir_y-y))) ** 1/2;
+assign distance = (((cir_x-x)*(cir_x-x))+ ((cir_y-y)*(cir_y-y)));
 
-assign circle_on = (distance < cir_r)? 1 : 0; //wall이 있는 영역
+assign circle_on = (cir_r*cir_r >= distance)? 1 : 0; //circle이 있는 영역
 
 endmodule
