@@ -421,7 +421,7 @@ assign rgb = (font_bit & score_on)? {4'd0,  4'd0,   4'd15} : //blue text
              (gaugebar_on[2])?      {4'd15,  4'd15,   4'd0} : //yellow gauge bar
              (gaugebar_on[3])?      {4'd15,  4'd9,   4'd0} : //orange gauge bar
              (gaugebar_on[4])?      {4'd15,  4'd0,   4'd0} : //red gauge bar
-             (circle_on)?           {4'd15, 4'd15,  4'd15} : // circle_test
+             (circle_on)?           {4'd15, 4'd9,  4'd0} : // circle_test
 //             (bar_on)? 3'b010 : // green bar
 //             (ball_on)? 3'b100 : // red ball
                                     {4'd15, 4'd15,  4'd15}; //white background
