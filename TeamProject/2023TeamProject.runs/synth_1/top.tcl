@@ -71,7 +71,6 @@ proc create_report { reportName command } {
 }
 OPTRACE "synth_1" START { ROLLUP_AUTO }
 set_param chipscope.maxJobs 2
-set_param xicom.use_bs_reader 1
 OPTRACE "Creating in-memory project" START { }
 create_project -in_memory -part xc7z020clg484-1
 
@@ -90,6 +89,7 @@ set_property ip_cache_permissions {read write} [current_project]
 OPTRACE "Creating in-memory project" END { }
 OPTRACE "Adding files" START { }
 read_verilog -library xil_defaultlib {
+  D:/Xilinx/DS/DS_TeamProject2023/TeamProject/2023TeamProject.srcs/sources_1/new/circle.v
   D:/Xilinx/DS/DS_TeamProject2023/TeamProject/2023TeamProject.srcs/sources_1/new/debounce.v
   D:/Xilinx/DS/DS_TeamProject2023/TeamProject/2023TeamProject.srcs/sources_1/new/graph_mod.v
   D:/Xilinx/DS/DS_TeamProject2023/TeamProject/2023TeamProject.srcs/sources_1/new/keypad.v

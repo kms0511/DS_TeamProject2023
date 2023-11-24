@@ -1,7 +1,7 @@
 Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
 ------------------------------------------------------------------------------------
 | Tool Version : Vivado v.2022.2 (win64) Build 3671981 Fri Oct 14 05:00:03 MDT 2022
-| Date         : Fri Nov 24 17:17:18 2023
+| Date         : Fri Nov 24 17:50:55 2023
 | Host         : Rhaudtjd-MSI-GE63VR-7RE running 64-bit major release  (build 9200)
 | Command      : report_control_sets -verbose -file top_control_sets_placed.rpt
 | Design       : top
@@ -59,10 +59,10 @@ Table of Contents
 | Clock Enable | Synchronous Set/Reset | Asynchronous Set/Reset | Total Registers | Total Slices |
 +--------------+-----------------------+------------------------+-----------------+--------------+
 | No           | No                    | No                     |               0 |            0 |
-| No           | No                    | Yes                    |              57 |           27 |
+| No           | No                    | Yes                    |              57 |           24 |
 | No           | Yes                   | No                     |               0 |            0 |
 | Yes          | No                    | No                     |               0 |            0 |
-| Yes          | No                    | Yes                    |              35 |           11 |
+| Yes          | No                    | Yes                    |              35 |           10 |
 | Yes          | Yes                   | No                     |               0 |            0 |
 +--------------+-----------------------+------------------------+-----------------+--------------+
 
@@ -74,10 +74,10 @@ Table of Contents
 |       Clock Signal      |           Enable Signal           |  Set/Reset Signal | Slice Load Count | Bel Load Count | Bels / Slice |
 +-------------------------+-----------------------------------+-------------------+------------------+----------------+--------------+
 |  clk_inst/inst/clk_out1 | keypad_inst/col[3]_i_1_n_0        | keypad_inst/AR[0] |                1 |              4 |         4.00 |
-|  clk_inst/inst/clk_out1 | keypad_inst/keypad_out[4]_i_1_n_0 | keypad_inst/AR[0] |                2 |              5 |         2.50 |
+|  clk_inst/inst/clk_out1 | keypad_inst/keypad_out[4]_i_1_n_0 | keypad_inst/AR[0] |                1 |              5 |         5.00 |
 |  clk_inst/inst/clk_out1 | sync_inst/trig                    | keypad_inst/AR[0] |                4 |             10 |         2.50 |
 |  clk_inst/inst/clk_out1 | debounce_inst/o[0]_i_1_n_0        | keypad_inst/AR[0] |                4 |             16 |         4.00 |
-|  clk_inst/inst/clk_out1 |                                   | keypad_inst/AR[0] |               27 |             57 |         2.11 |
+|  clk_inst/inst/clk_out1 |                                   | keypad_inst/AR[0] |               24 |             57 |         2.38 |
 +-------------------------+-----------------------------------+-------------------+------------------+----------------+--------------+
 
 

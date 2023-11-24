@@ -1,7 +1,7 @@
 Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
 -------------------------------------------------------------------------------------------------------------------------------
 | Tool Version     : Vivado v.2022.2 (win64) Build 3671981 Fri Oct 14 05:00:03 MDT 2022
-| Date             : Fri Nov 24 17:17:55 2023
+| Date             : Fri Nov 24 17:51:34 2023
 | Host             : Rhaudtjd-MSI-GE63VR-7RE running 64-bit major release  (build 9200)
 | Command          : report_power -file top_power_routed.rpt -pb top_power_summary_routed.pb -rpx top_power_routed.rpx
 | Design           : top
@@ -30,14 +30,14 @@ Table of Contents
 ----------
 
 +--------------------------+--------------+
-| Total On-Chip Power (W)  | 0.230        |
+| Total On-Chip Power (W)  | 0.227        |
 | Design Power Budget (W)  | Unspecified* |
 | Power Budget Margin (W)  | NA           |
-| Dynamic (W)              | 0.120        |
+| Dynamic (W)              | 0.117        |
 | Device Static (W)        | 0.110        |
 | Effective TJA (C/W)      | 11.5         |
-| Max Ambient (C)          | 82.3         |
-| Junction Temperature (C) | 27.7         |
+| Max Ambient (C)          | 82.4         |
+| Junction Temperature (C) | 27.6         |
 | Confidence Level         | Low          |
 | Setting File             | ---          |
 | Simulation Activity File | ---          |
@@ -53,17 +53,17 @@ Table of Contents
 | On-Chip        | Power (W) | Used     | Available | Utilization (%) |
 +----------------+-----------+----------+-----------+-----------------+
 | Clocks         |    <0.001 |        5 |       --- |             --- |
-| Slice Logic    |    <0.001 |      591 |       --- |             --- |
-|   LUT as Logic |    <0.001 |      422 |     53200 |            0.79 |
+| Slice Logic    |    <0.001 |      595 |       --- |             --- |
+|   LUT as Logic |    <0.001 |      430 |     53200 |            0.81 |
 |   Register     |    <0.001 |       92 |    106400 |            0.09 |
 |   CARRY4       |    <0.001 |       12 |     13300 |            0.09 |
-|   F7/F8 Muxes  |    <0.001 |        9 |     53200 |            0.02 |
+|   F7/F8 Muxes  |    <0.001 |        1 |     53200 |           <0.01 |
 |   Others       |     0.000 |        8 |       --- |             --- |
-| Signals        |    <0.001 |      518 |       --- |             --- |
+| Signals        |    <0.001 |      541 |       --- |             --- |
 | MMCM           |     0.115 |        1 |         4 |           25.00 |
-| I/O            |     0.004 |       24 |       200 |           12.00 |
+| I/O            |    <0.001 |       24 |       200 |           12.00 |
 | Static Power   |     0.110 |          |           |                 |
-| Total          |     0.230 |          |           |                 |
+| Total          |     0.227 |          |           |                 |
 +----------------+-----------+----------+-----------+-----------------+
 
 
@@ -74,8 +74,8 @@ Table of Contents
 | Source    | Voltage (V) | Total (A) | Dynamic (A) | Static (A) | Powerup (A) | Budget (A)  | Margin (A) |
 +-----------+-------------+-----------+-------------+------------+-------------+-------------+------------+
 | Vccint    |       1.000 |     0.009 |       0.001 |      0.008 |       NA    | Unspecified | NA         |
-| Vccaux    |       1.800 |     0.075 |       0.064 |      0.011 |       NA    | Unspecified | NA         |
-| Vcco33    |       3.300 |     0.002 |       0.001 |      0.001 |       NA    | Unspecified | NA         |
+| Vccaux    |       1.800 |     0.074 |       0.064 |      0.011 |       NA    | Unspecified | NA         |
+| Vcco33    |       3.300 |     0.001 |       0.000 |      0.001 |       NA    | Unspecified | NA         |
 | Vcco25    |       2.500 |     0.001 |       0.000 |      0.001 |       NA    | Unspecified | NA         |
 | Vcco18    |       1.800 |     0.000 |       0.000 |      0.000 |       NA    | Unspecified | NA         |
 | Vcco15    |       1.500 |     0.000 |       0.000 |      0.000 |       NA    | Unspecified | NA         |
@@ -151,7 +151,7 @@ Table of Contents
 +------------+-----------+
 | Name       | Power (W) |
 +------------+-----------+
-| top        |     0.120 |
+| top        |     0.117 |
 |   clk_inst |     0.115 |
 |     inst   |     0.115 |
 +------------+-----------+
