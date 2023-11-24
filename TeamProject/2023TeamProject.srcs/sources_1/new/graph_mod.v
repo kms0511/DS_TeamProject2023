@@ -6,21 +6,88 @@ module graph_mod (clk, rst, x, y, key, key_pulse, rgb);
 parameter MAX_X = 640; 
 parameter MAX_Y = 480;  
 
-//wall 의 좌표 설정
-parameter WALL_X_L = 32; 
-parameter WALL_X_R = 35;
+//wall0의 x 좌표
+parameter WALL0_X_L = 166; 
+parameter WALL0_X_R = 473;
+parameter WALL0_Y_U = 0; 
+parameter WALL0_Y_D = 1;
 
-//bar의 x 좌표
-parameter BAR_X_L = 600; 
-parameter BAR_X_R = 603;
+//wall1 의 좌표 설정
+parameter WALL1_X_L = 166; 
+parameter WALL1_X_R = 169;
+parameter WALL1_Y_U = 0; 
+parameter WALL1_Y_D = 479;
+
+//wall2 의 좌표 설정
+parameter WALL2_X_L = 470; 
+parameter WALL2_X_R = 473;
+parameter WALL2_Y_U = 0; 
+parameter WALL2_Y_D = 479;
+
+//target0 의 좌표 설정
+parameter TARGET0_X_L = 259; 
+parameter TARGET0_X_R = 378;
+parameter TARGET0_Y_U = 41; 
+parameter TARGET0_Y_D = 160;
+
+//target1 의 좌표 설정
+parameter TARGET1_X_L = 284; 
+parameter TARGET1_X_R = 353;
+parameter TARGET1_Y_U = 66; 
+parameter TARGET1_Y_D = 135;
+
+//target2 의 좌표 설정
+parameter TARGET2_X_L = 309; 
+parameter TARGET2_X_R = 328;
+parameter TARGET2_Y_U = 91; 
+parameter TARGET2_Y_D = 110;
+
+//move bar 의 좌표 설정
+parameter MVBAR_X_L = 170; 
+parameter MVBAR_X_R = 469;
+parameter MVBAR_Y_U = 448; 
+parameter MVBAR_Y_D = 449;
+
+//gauge bar move 의 좌표설정
+parameter GAUGESHOW_X_L = 170; 
+parameter GAUGESHOW_X_R = 173;
+parameter GAUGESHOW_Y_U = 474; 
+parameter GAUGESHOW_Y_D = 479;
+//gauge bar 0 의 좌표설정
+parameter GAUGEBAR0_X_L = 170; 
+parameter GAUGEBAR0_X_R = 269;
+parameter GAUGEBAR0_Y_U = 474; 
+parameter GAUGEBAR0_Y_D = 479;
+//gauge bar 1 의 좌표설정
+parameter GAUGEBAR1_X_L = 270; 
+parameter GAUGEBAR1_X_R = 349;
+parameter GAUGEBAR1_Y_U = 474; 
+parameter GAUGEBAR1_Y_D = 479;
+//gauge bar 2 의 좌표설정
+parameter GAUGEBAR2_X_L = 350; 
+parameter GAUGEBAR2_X_R = 409;
+parameter GAUGEBAR2_Y_U = 474; 
+parameter GAUGEBAR2_Y_D = 479;
+//gauge bar 3 의 좌표설정
+parameter GAUGEBAR3_X_L = 410; 
+parameter GAUGEBAR3_X_R = 449;
+parameter GAUGEBAR3_Y_U = 474; 
+parameter GAUGEBAR3_Y_D = 479;
+//gauge bar 4 의 좌표설정
+parameter GAUGEBAR4_X_L = 450; 
+parameter GAUGEBAR4_X_R = 469;
+parameter GAUGEBAR4_Y_U = 474; 
+parameter GAUGEBAR4_Y_D = 479;
+
+
 
 //bar 속도, bar size
-parameter BAR_Y_SIZE = 72; 
-parameter BAR_V = 4; 
+//parameter BAR_Y_SIZE = 72; 
+//parameter BAR_V = 4; 
 
 //ball 속도, ball size 
-parameter BALL_SIZE = 8; 
-parameter BALL_V = 4; //ball의 속도
+//parameter BALL_SIZE = 8; 
+//parameter BALL_V = 4; //ball의 속도
 
 input clk, rst;
 input [9:0] x, y;
@@ -29,17 +96,20 @@ output [2:0] rgb;
 
 wire frame_tick; 
 
-wire wall_on, bar_on, ball_on; 
-wire [9:0] bar_y_t, bar_y_b; 
-reg [9:0] current_bar_y, next_bar_y; 
+wire [2:0] wall_on,target_on;
+wire [4:0] gaugebar_on;
+wire gaugeshow_on;
+//wire bar_on, ball_on; 
+//wire [9:0] bar_y_t, bar_y_b; 
+//reg [9:0] current_bar_y, next_bar_y; 
 
-reg [9:0] current_ball_x, current_ball_y;
-reg [9:0] next_ball_x, next_ball_y;
+//reg [9:0] current_ball_x, current_ball_y;
+//reg [9:0] next_ball_x, next_ball_y;
 
-reg [9:0] current_ball_vx, current_ball_vy; 
-reg [9:0] next_ball_vx, next_ball_vy;
+//reg [9:0] current_ball_vx, current_ball_vy; 
+//reg [9:0] next_ball_vx, next_ball_vy;
 
-wire [9:0] ball_x_l, ball_x_r, ball_y_t, ball_y_b;
+//wire [9:0] ball_x_l, ball_x_r, ball_y_t, ball_y_b;
 wire reach_top, reach_bottom, reach_wall, reach_bar, miss_ball;
 reg game_stop, game_over;  
 
@@ -47,15 +117,30 @@ reg game_stop, game_over;
 assign frame_tick = (y==MAX_Y-1 && x==MAX_X-1)? 1 : 0; // 매 프레임마다 한 clk 동안만 1이 됨. 
 
 // wall
-assign wall_on = (x>=WALL_X_L && x<=WALL_X_R)? 1 : 0; //wall이 있는 영역
+assign wall_on[0] = (x>=WALL0_X_L && x<=WALL0_X_R && y>=WALL0_Y_U && y<=WALL0_Y_D)? 1 : 0; //wall이 있는 영역
+assign wall_on[1] = (x>=WALL1_X_L && x<=WALL1_X_R && y>=WALL1_Y_U && y<=WALL1_Y_D)? 1 : 0; //wall이 있는 영역
+assign wall_on[2] = (x>=WALL2_X_L && x<=WALL2_X_R && y>=WALL2_Y_U && y<=WALL2_Y_D)? 1 : 0; //wall이 있는 영역
+
+//target
+assign target_on[0] = (x>=TARGET0_X_L && x<=TARGET0_X_R && y>=TARGET0_Y_U && y<=TARGET0_Y_D)? 1 : 0; //target이 있는 영역
+assign target_on[1] = (x>=TARGET1_X_L && x<=TARGET1_X_R && y>=TARGET1_Y_U && y<=TARGET1_Y_D)? 1 : 0; //target이 있는 영역
+assign target_on[2] = (x>=TARGET2_X_L && x<=TARGET2_X_R && y>=TARGET2_Y_U && y<=TARGET2_Y_D)? 1 : 0; //target이 있는 영역
+
+//gauge bar
+assign gaugeshow_on = (x>=GAUGESHOW_X_L && x<=GAUGESHOW_X_R && y>=GAUGESHOW_Y_U && y<=GAUGESHOW_Y_D)? 1 : 0; //gaugebar 표시가 있는 영역
+assign gaugebar_on[0] = (x>=GAUGEBAR0_X_L && x<=GAUGEBAR0_X_R && y>=GAUGEBAR0_Y_U && y<=GAUGEBAR0_Y_D)? 1 : 0; //gaugebar가 있는 영역
+assign gaugebar_on[1] = (x>=GAUGEBAR1_X_L && x<=GAUGEBAR1_X_R && y>=GAUGEBAR1_Y_U && y<=GAUGEBAR1_Y_D)? 1 : 0; //gaugebar가 있는 영역
+assign gaugebar_on[2] = (x>=GAUGEBAR2_X_L && x<=GAUGEBAR2_X_R && y>=GAUGEBAR2_Y_U && y<=GAUGEBAR2_Y_D)? 1 : 0; //gaugebar가 있는 영역
+assign gaugebar_on[3] = (x>=GAUGEBAR3_X_L && x<=GAUGEBAR3_X_R && y>=GAUGEBAR3_Y_U && y<=GAUGEBAR3_Y_D)? 1 : 0; //gaugebar가 있는 영역
+assign gaugebar_on[4] = (x>=GAUGEBAR4_X_L && x<=GAUGEBAR4_X_R && y>=GAUGEBAR4_Y_U && y<=GAUGEBAR4_Y_D)? 1 : 0; //gaugebar가 있는 영역
 
 /*---------------------------------------------------------*/
 // bar의 위치 결정
 /*---------------------------------------------------------*/
-assign bar_y_t = current_bar_y; //bar의 top
-assign bar_y_b = bar_y_t + BAR_Y_SIZE - 1; //bar의 bottom
+//assign bar_y_t = current_bar_y; //bar의 top
+//assign bar_y_b = bar_y_t + BAR_Y_SIZE - 1; //bar의 bottom
 
-assign bar_on = (x>=BAR_X_L && x<=BAR_X_R && y>=bar_y_t && y<=bar_y_b)? 1 : 0; //bar가 있는 영역
+//assign bar_on = (x>=BAR_X_L && x<=BAR_X_R && y>=bar_y_t && y<=bar_y_b)? 1 : 0; //bar가 있는 영역
 
 //always @* begin
 //    if (game_stop) next_bar_y <= (MAX_Y-BAR_Y_SIZE)/2;
@@ -64,85 +149,85 @@ assign bar_on = (x>=BAR_X_L && x<=BAR_X_R && y>=bar_y_t && y<=bar_y_b)? 1 : 0; /
 //    else next_bar_y = current_bar_y; 
 //end
 
-always @* begin
-    if (game_stop) next_bar_y <= (MAX_Y-BAR_Y_SIZE)/2;
-    else if (frame_tick==1 && key==5'h11 && bar_y_b<=MAX_Y-1-BAR_V) next_bar_y = current_bar_y + BAR_V;
-    else if (frame_tick==1 && key==5'h14 && bar_y_t>=BAR_V) next_bar_y = current_bar_y - BAR_V;
-    else next_bar_y = current_bar_y; 
-end
+//always @* begin
+//    if (game_stop) next_bar_y <= (MAX_Y-BAR_Y_SIZE)/2;
+//    else if (frame_tick==1 && key==5'h11 && bar_y_b<=MAX_Y-1-BAR_V) next_bar_y = current_bar_y + BAR_V;
+//    else if (frame_tick==1 && key==5'h14 && bar_y_t>=BAR_V) next_bar_y = current_bar_y - BAR_V;
+//    else next_bar_y = current_bar_y; 
+//end
 
-always @(posedge clk, posedge rst) begin
-    if (rst) current_bar_y <= (MAX_Y-BAR_Y_SIZE)/2; 
-    else current_bar_y <= next_bar_y; 
-end
+//always @(posedge clk, posedge rst) begin
+//    if (rst) current_bar_y <= (MAX_Y-BAR_Y_SIZE)/2; 
+//    else current_bar_y <= next_bar_y; 
+//end
        
 /*---------------------------------------------------------*/
 // ball의 위치 결정
 /*---------------------------------------------------------*/
-assign ball_x_l = current_ball_x; //ball의 left
-assign ball_x_r = current_ball_x + BALL_SIZE - 1; //ball의 right
-assign ball_y_t = current_ball_y; //ball의 top
-assign ball_y_b = current_ball_y + BALL_SIZE - 1; //ball의 bottom
+//assign ball_x_l = current_ball_x; //ball의 left
+//assign ball_x_r = current_ball_x + BALL_SIZE - 1; //ball의 right
+//assign ball_y_t = current_ball_y; //ball의 top
+//assign ball_y_b = current_ball_y + BALL_SIZE - 1; //ball의 bottom
 
-assign ball_on = (x>=ball_x_l && x<=ball_x_r && y>=ball_y_t && y<=ball_y_b)? 1 : 0; //ball이 있는 영역
+//assign ball_on = (x>=ball_x_l && x<=ball_x_r && y>=ball_y_t && y<=ball_y_b)? 1 : 0; //ball이 있는 영역
 
-assign reach_top = (ball_y_t==0)? 1 : 0; //ball 윗쪽 경계가 1보다 작으면 천장에 부딪힘
-assign reach_bottom = (ball_y_b>MAX_Y-1)? 1 : 0; //ball의 아래쪽 경계가 479보다 크면 바닥에 부딪힘
-assign reach_wall =(ball_x_l<=WALL_X_R)? 1 : 0; //ball의 왼쪽경계가 wall의 오른쪽 경계보다 작으면 wall에 부딪힘
-assign reach_bar = (ball_x_r>=BAR_X_L && ball_x_r<=BAR_X_R && ball_y_b>=bar_y_t && ball_y_t<=bar_y_b)? 1 : 0; //ball이 bar에 부딪힘
-assign miss_ball = (ball_x_r>MAX_X)? 1 : 0; //ball의 오른쪽 경계가 639보다 크면 ball을 놓침
+//assign reach_top = (ball_y_t==0)? 1 : 0; //ball 윗쪽 경계가 1보다 작으면 천장에 부딪힘
+//assign reach_bottom = (ball_y_b>MAX_Y-1)? 1 : 0; //ball의 아래쪽 경계가 479보다 크면 바닥에 부딪힘
+//assign reach_wall =(ball_x_l<=WALL_X_R)? 1 : 0; //ball의 왼쪽경계가 wall의 오른쪽 경계보다 작으면 wall에 부딪힘
+//assign reach_bar = (ball_x_r>=BAR_X_L && ball_x_r<=BAR_X_R && ball_y_b>=bar_y_t && ball_y_t<=bar_y_b)? 1 : 0; //ball이 bar에 부딪힘
+//assign miss_ball = (ball_x_r>MAX_X)? 1 : 0; //ball의 오른쪽 경계가 639보다 크면 ball을 놓침
 
-always @* begin
-    if (game_stop) next_ball_vx = -1*BALL_V; //시작할때는 왼쪽으로
-    else if (reach_wall) next_ball_vx = BALL_V; //벽에 부딪히면 오른쪽으로
-    else if (reach_bar) next_ball_vx = -1*BALL_V; //바에 튕기면 왼쪽으로
-    else next_ball_vx = current_ball_vx; //아니면 가던 방향으로
-end
+//always @* begin
+//    if (game_stop) next_ball_vx = -1*BALL_V; //시작할때는 왼쪽으로
+ //   else if (reach_wall) next_ball_vx = BALL_V; //벽에 부딪히면 오른쪽으로
+ //   else if (reach_bar) next_ball_vx = -1*BALL_V; //바에 튕기면 왼쪽으로
+  //  else next_ball_vx = current_ball_vx; //아니면 가던 방향으로
+//end
 
-always @* begin
-    if (game_stop) next_ball_vy = BALL_V; //시작할때는 아래로
-    else if (reach_top) next_ball_vy = BALL_V; //천장에 부딪히면 아래로.
-    else if (reach_bottom) next_ball_vy = -1*BALL_V; //바닥에 부딪히면 위로
-    else next_ball_vy = current_ball_vy; //아니면 가던 방향으로
-end
+//always @* begin
+//    if (game_stop) next_ball_vy = BALL_V; //시작할때는 아래로
+//    else if (reach_top) next_ball_vy = BALL_V; //천장에 부딪히면 아래로.
+//    else if (reach_bottom) next_ball_vy = -1*BALL_V; //바닥에 부딪히면 위로
+//    else next_ball_vy = current_ball_vy; //아니면 가던 방향으로
+//end
 
-always @(posedge clk, posedge rst) begin
-    if (rst) begin
-        current_ball_vx <= -1*BALL_V; 
-        current_ball_vy <= BALL_V;
-    end
-    else begin
-        current_ball_vx <= next_ball_vx; 
-        current_ball_vy <= next_ball_vy;
-    end
-end
+//always @(posedge clk, posedge rst) begin
+ //   if (rst) begin
+   //     current_ball_vx <= -1*BALL_V; 
+     //   current_ball_vy <= BALL_V;
+    //end
+    //else begin
+      //  current_ball_vx <= next_ball_vx; 
+        //current_ball_vy <= next_ball_vy;
+    //end
+//end
 
 
-always @* begin
-    if (game_stop) begin 
-        next_ball_x = MAX_X/2;
-        next_ball_y = MAX_Y/2; 
-    end
-    else if (frame_tick) begin
-        next_ball_x = current_ball_x + current_ball_vx; //매 프레임마다 ball_vx_reg만큼 움직임
-        next_ball_y = current_ball_y + current_ball_vy; //매 프레임마다 ball_vy_reg만큼 움직임
-    end
-    else begin
-        next_ball_x = current_ball_x; //frame_tick이 아닐때는 안 움직임. 
-        next_ball_y = current_ball_y; //frame_tick이 아닐때는 안 움직임. 
-    end
-end
-
-always @(posedge clk, posedge rst) begin
-    if (rst) begin
-        current_ball_x <= MAX_X/2; 
-        current_ball_y <= MAX_Y/2;
-    end
-    else begin
-        current_ball_x <= next_ball_x; 
-        current_ball_y <= next_ball_y;
-    end
-end
+//always @* begin
+//    if (game_stop) begin 
+//        next_ball_x = MAX_X/2;
+//        next_ball_y = MAX_Y/2; 
+//    end
+//    else if (frame_tick) begin
+//        next_ball_x = current_ball_x + current_ball_vx; //매 프레임마다 ball_vx_reg만큼 움직임
+//        next_ball_y = current_ball_y + current_ball_vy; //매 프레임마다 ball_vy_reg만큼 움직임
+//    end
+//    else begin
+//        next_ball_x = current_ball_x; //frame_tick이 아닐때는 안 움직임. 
+ //       next_ball_y = current_ball_y; //frame_tick이 아닐때는 안 움직임. 
+ //   end
+//end
+//
+//always @(posedge clk, posedge rst) begin
+ //   if (rst) begin
+  //      current_ball_x <= MAX_X/2; 
+   //     current_ball_y <= MAX_Y/2;
+   // end
+   // else begin
+    //    current_ball_x <= next_ball_x; 
+     //   current_ball_y <= next_ball_y;
+    //end
+//end
 
 /*---------------------------------------------------------*/
 // bar로 공을 받을 때 마다 score를 1씩 증가시키는 로직 
@@ -307,10 +392,20 @@ end
 assign rgb = (font_bit & score_on)? 3'b001 : //blue text
              (font_bit & life_on)? 3'b001 : //blue text
              (font_bit & over_on)? 3'b001 : //blue text
-             (wall_on)? 3'b001 : //blue wall
-             (bar_on)? 3'b010 : // green bar
-             (ball_on)? 3'b100 : // red ball
-             3'b110; //yellow background
-  
+             (wall_on[0])? 3'b001 : //blue wall
+             (wall_on[1])? 3'b001 : //blue wall
+             (wall_on[2])? 3'b001 : //blue wall
+             (target_on[2])? 3'b100 : //red target
+             (target_on[1])? 3'b110 : //orange target
+             (target_on[0])? 3'b001 : //green target
+             (gaugeshow_on)? 3'b000 : //gauge bar          
+             (gaugebar_on[0])? 3'b001 : //gauge bar
+             (gaugebar_on[1])? 3'b010 : //gauge bar
+             (gaugebar_on[2])? 3'b101 : //gauge bar
+             (gaugebar_on[3])? 3'b110 : //gauge bar
+             (gaugebar_on[4])? 3'b100 : //gauge bar
+//             (bar_on)? 3'b010 : // green bar
+//             (ball_on)? 3'b100 : // red ball
+             3'b111; //white background
 
 endmodule

@@ -1,0 +1,13 @@
+#-----------------------------------------------------------
+# Vivado v2022.2 (64-bit)
+# SW Build 3671981 on Fri Oct 14 05:00:03 MDT 2022
+# IP Build 3669848 on Fri Oct 14 08:30:02 MDT 2022
+# Start of session at: Fri Nov 24 17:16:37 2023
+# Process ID: 13356
+# Current directory: D:/Xilinx/DS/DS_TeamProject2023/TeamProject/2023TeamProject.runs/impl_1
+# Command line: vivado.exe -log top.vdi -applog -product Vivado -messageDb vivado.pb -mode batch -source top.tcl -notrace
+# Log file: D:/Xilinx/DS/DS_TeamProject2023/TeamProject/2023TeamProject.runs/impl_1/top.vdi
+# Journal file: D:/Xilinx/DS/DS_TeamProject2023/TeamProject/2023TeamProject.runs/impl_1\vivado.jou
+# Running On: Rhaudtjd-MSI-GE63VR-7RE, OS: Windows, CPU Frequency: 2808 MHz, CPU Physical cores: 4, Host memory: 25649 MB
+#-----------------------------------------------------------
+source top.tcl -notrace

@@ -2,10 +2,10 @@
 # Vivado v2022.2 (64-bit)
 # SW Build 3671981 on Fri Oct 14 05:00:03 MDT 2022
 # IP Build 3669848 on Fri Oct 14 08:30:02 MDT 2022
-# Start of session at: Fri Nov 24 16:40:39 2023
-# Process ID: 8564
+# Start of session at: Fri Nov 24 15:44:43 2023
+# Process ID: 4616
 # Current directory: D:/Xilinx/DS/DS_TeamProject2023/TeamProject
-# Command line: vivado.exe -gui_launcher_event rodinguilauncherevent6136 D:\Xilinx\DS\DS_TeamProject2023\TeamProject\2023TeamProject.xpr
+# Command line: vivado.exe -gui_launcher_event rodinguilauncherevent4168 D:\Xilinx\DS\DS_TeamProject2023\TeamProject\2023TeamProject.xpr
 # Log file: D:/Xilinx/DS/DS_TeamProject2023/TeamProject/vivado.log
 # Journal file: D:/Xilinx/DS/DS_TeamProject2023/TeamProject\vivado.jou
 # Running On: Rhaudtjd-MSI-GE63VR-7RE, OS: Windows, CPU Frequency: 2808 MHz, CPU Physical cores: 4, Host memory: 25649 MB
@@ -16,7 +16,6 @@ Scanning sources...
 Finished scanning sources
 INFO: [IP_Flow 19-234] Refreshing IP repositories
 INFO: [IP_Flow 19-1704] No user IP repositories specified
-INFO: [IP_Flow 19-2313] Loaded Vivado IP repository 'D:/Xilinx/Vivado/2022.2/data/ip'.
 WARNING: [Board 49-26] cannot add Board Part xilinx.com:kc705:part0:1.6 available at D:/Xilinx/Vivado/2022.2/data/xhub/boards/XilinxBoardStore/boards/Xilinx/kc705/1.6/board.xml as part xc7k325tffg900-2 specified in board_part file is either invalid or not available
 WARNING: [Board 49-26] cannot add Board Part xilinx.com:kcu105:part0:1.6 available at D:/Xilinx/Vivado/2022.2/data/xhub/boards/XilinxBoardStore/boards/Xilinx/kcu105/1.6/board.xml as part xcku040-ffva1156-2-e specified in board_part file is either invalid or not available
 WARNING: [Board 49-26] cannot add Board Part xilinx.com:kcu105:part0:1.7 available at D:/Xilinx/Vivado/2022.2/data/xhub/boards/XilinxBoardStore/boards/Xilinx/kcu105/1.7/board.xml as part xcku040-ffva1156-2-e specified in board_part file is either invalid or not available
@@ -62,74 +61,10 @@ WARNING: [Board 49-26] cannot add Board Part xilinx.com:zcu216:part0:2.0 availab
 WARNING: [Board 49-26] cannot add Board Part xilinx.com:zcu216ld:part0:2.0 available at D:/Xilinx/Vivado/2022.2/data/xhub/boards/XilinxBoardStore/boards/Xilinx/zcu216ld/production/2.0/board.xml as part xczu59dr-ffvf1760-2-i specified in board_part file is either invalid or not available
 WARNING: [Board 49-26] cannot add Board Part xilinx.com:zcu670:part0:2.0 available at D:/Xilinx/Vivado/2022.2/data/xhub/boards/XilinxBoardStore/boards/Xilinx/zcu670/2.0/board.xml as part xczu67dr-fsve1156-2-i specified in board_part file is either invalid or not available
 WARNING: [Board 49-26] cannot add Board Part xilinx.com:zcu670ld:part0:1.0 available at D:/Xilinx/Vivado/2022.2/data/xhub/boards/XilinxBoardStore/boards/Xilinx/zcu670ld/1.0/board.xml as part xczu57dr-fsve1156-2-i specified in board_part file is either invalid or not available
-open_project: Time (s): cpu = 00:00:25 ; elapsed = 00:00:10 . Memory (MB): peak = 1137.559 ; gain = 362.719
+INFO: [IP_Flow 19-2313] Loaded Vivado IP repository 'D:/Xilinx/Vivado/2022.2/data/ip'.
+open_project: Time (s): cpu = 00:00:28 ; elapsed = 00:00:11 . Memory (MB): peak = 1130.707 ; gain = 347.496
 update_compile_order -fileset sources_1
-launch_runs impl_1 -to_step write_bitstream -jobs 8
-[Fri Nov 24 16:45:12 2023] Launched synth_1...
-Run output will be captured here: D:/Xilinx/DS/DS_TeamProject2023/TeamProject/2023TeamProject.runs/synth_1/runme.log
-[Fri Nov 24 16:45:12 2023] Launched impl_1...
-Run output will be captured here: D:/Xilinx/DS/DS_TeamProject2023/TeamProject/2023TeamProject.runs/impl_1/runme.log
-open_hw_manager
-connect_hw_server -allow_non_jtag
-INFO: [Labtools 27-2285] Connecting to hw_server url TCP:localhost:3121
-INFO: [Labtools 27-2222] Launching hw_server...
-INFO: [Labtools 27-2221] Launch Output:
-
-****** Xilinx hw_server v2022.2
-  **** Build date : Oct 14 2022 at 05:18:10
-    ** Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
-
-
-INFO: [Labtools 27-3415] Connecting to cs_server url TCP:localhost:0
-INFO: [Labtools 27-3417] Launching cs_server...
-INFO: [Labtools 27-2221] Launch Output:
-
-
-******** Xilinx cs_server v2022.2.0
-  ****** Build date   : Oct 05 2022-08:25:37
-    **** Build number : 2022.2.1664925937
-      ** Copyright 2017-2023 Xilinx, Inc. All Rights Reserved.
-
-
-
-connect_hw_server: Time (s): cpu = 00:00:01 ; elapsed = 00:00:06 . Memory (MB): peak = 1199.906 ; gain = 0.000
-open_hw_target
-INFO: [Labtoolstcl 44-466] Opening hw_target localhost:3121/xilinx_tcf/Digilent/210248B780C6
-open_hw_target: Time (s): cpu = 00:00:07 ; elapsed = 00:00:11 . Memory (MB): peak = 3346.066 ; gain = 2146.160
-set_property PROGRAM.FILE {D:/Xilinx/DS/DS_TeamProject2023/TeamProject/2023TeamProject.runs/impl_1/top.bit} [get_hw_devices xc7z020_1]
-current_hw_device [get_hw_devices xc7z020_1]
-refresh_hw_device -update_hw_probes false [lindex [get_hw_devices xc7z020_1] 0]
-INFO: [Labtools 27-1434] Device xc7z020 (JTAG device index = 1) is programmed with a design that has no supported debug core(s) in it.
-set_property PROBES.FILE {} [get_hw_devices xc7z020_1]
-set_property FULL_PROBES.FILE {} [get_hw_devices xc7z020_1]
-set_property PROGRAM.FILE {D:/Xilinx/DS/DS_TeamProject2023/TeamProject/2023TeamProject.runs/impl_1/top.bit} [get_hw_devices xc7z020_1]
-program_hw_devices [get_hw_devices xc7z020_1]
-INFO: [Labtools 27-3164] End of startup status: HIGH
-refresh_hw_device [lindex [get_hw_devices xc7z020_1] 0]
-INFO: [Labtools 27-1434] Device xc7z020 (JTAG device index = 1) is programmed with a design that has no supported debug core(s) in it.
-reset_run synth_1
-INFO: [Project 1-1160] Copying file D:/Xilinx/DS/DS_TeamProject2023/TeamProject/2023TeamProject.runs/synth_1/top.dcp to D:/Xilinx/DS/DS_TeamProject2023/TeamProject/2023TeamProject.srcs/utils_1/imports/synth_1 and adding it to utils fileset
-WARNING: [Vivado 12-1017] Problems encountered:
-1. Failed to delete one or more files in run directory D:/Xilinx/DS/DS_TeamProject2023/TeamProject/2023TeamProject.runs/synth_1
-
-launch_runs impl_1 -to_step write_bitstream -jobs 8
-[Fri Nov 24 17:15:11 2023] Launched synth_1...
-Run output will be captured here: D:/Xilinx/DS/DS_TeamProject2023/TeamProject/2023TeamProject.runs/synth_1/runme.log
-[Fri Nov 24 17:15:11 2023] Launched impl_1...
-Run output will be captured here: D:/Xilinx/DS/DS_TeamProject2023/TeamProject/2023TeamProject.runs/impl_1/runme.log
-ERROR: [Labtoolstcl 44-513] HW Target shutdown. Closing target: localhost:3121/xilinx_tcf/Digilent/210248B780C6
-INFO: [Labtoolstcl 44-466] Opening hw_target localhost:3121/xilinx_tcf/Digilent/210248B780C6
-WARNING: [Labtoolstcl 44-129] No matching hw_ila_data was found.
-INFO: [Labtools 27-1435] Device xc7z020 (JTAG device index = 1) is not programmed (DONE status = 0).
-WARNING: [Labtoolstcl 44-129] No matching hw_ila_data was found.
-set_property PROBES.FILE {} [get_hw_devices xc7z020_1]
-set_property FULL_PROBES.FILE {} [get_hw_devices xc7z020_1]
-set_property PROGRAM.FILE {D:/Xilinx/DS/DS_TeamProject2023/TeamProject/2023TeamProject.runs/impl_1/top.bit} [get_hw_devices xc7z020_1]
-program_hw_devices [get_hw_devices xc7z020_1]
-INFO: [Labtools 27-3164] End of startup status: HIGH
-refresh_hw_device [lindex [get_hw_devices xc7z020_1] 0]
-INFO: [Labtools 27-1434] Device xc7z020 (JTAG device index = 1) is programmed with a design that has no supported debug core(s) in it.
-close_hw_manager
-close_project
+update_compile_order -fileset sources_1
+update_compile_order -fileset sources_1
 exit
-INFO: [Common 17-206] Exiting Vivado at Fri Nov 24 17:22:52 2023...
+INFO: [Common 17-206] Exiting Vivado at Fri Nov 24 15:46:11 2023...
