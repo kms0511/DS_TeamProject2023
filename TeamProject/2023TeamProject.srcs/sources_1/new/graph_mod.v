@@ -24,23 +24,27 @@ parameter WALL2_X_R = 473;
 parameter WALL2_Y_U = 0; 
 parameter WALL2_Y_D = 479;
 
+//target 의 좌표 설정
+parameter TARGET_X_C = 318; 
+parameter TARGET_Y_C = 100;
+
 //target0 의 좌표 설정
-parameter TARGET0_X_L = 259; 
-parameter TARGET0_X_R = 378;
-parameter TARGET0_Y_U = 41; 
-parameter TARGET0_Y_D = 160;
+// parameter TARGET0_X_L = 259; 
+// parameter TARGET0_X_R = 378;
+// parameter TARGET0_Y_U = 41; 
+// parameter TARGET0_Y_D = 160;
 
-//target1 의 좌표 설정
-parameter TARGET1_X_L = 284; 
-parameter TARGET1_X_R = 353;
-parameter TARGET1_Y_U = 66; 
-parameter TARGET1_Y_D = 135;
+// //target1 의 좌표 설정
+// parameter TARGET1_X_L = 284; 
+// parameter TARGET1_X_R = 353;
+// parameter TARGET1_Y_U = 66; 
+// parameter TARGET1_Y_D = 135;
 
-//target2 의 좌표 설정
-parameter TARGET2_X_L = 309; 
-parameter TARGET2_X_R = 328;
-parameter TARGET2_Y_U = 91; 
-parameter TARGET2_Y_D = 110;
+// //target2 의 좌표 설정
+// parameter TARGET2_X_L = 309; 
+// parameter TARGET2_X_R = 328;
+// parameter TARGET2_Y_U = 91; 
+// parameter TARGET2_Y_D = 110;
 
 //move bar 의 좌표 설정
 parameter MVBAR_X_L = 170; 
@@ -127,9 +131,17 @@ assign wall_on[1] = (x>=WALL1_X_L && x<=WALL1_X_R && y>=WALL1_Y_U && y<=WALL1_Y_
 assign wall_on[2] = (x>=WALL2_X_L && x<=WALL2_X_R && y>=WALL2_Y_U && y<=WALL2_Y_D)? 1 : 0; //wall이 있는 영역
 
 //target
-assign target_on[0] = (x>=TARGET0_X_L && x<=TARGET0_X_R && y>=TARGET0_Y_U && y<=TARGET0_Y_D)? 1 : 0; //target이 있는 영역
-assign target_on[1] = (x>=TARGET1_X_L && x<=TARGET1_X_R && y>=TARGET1_Y_U && y<=TARGET1_Y_D)? 1 : 0; //target이 있는 영역
-assign target_on[2] = (x>=TARGET2_X_L && x<=TARGET2_X_R && y>=TARGET2_Y_U && y<=TARGET2_Y_D)? 1 : 0; //target이 있는 영역
+// assign target_on[0] = (x>=TARGET0_X_L && x<=TARGET0_X_R && y>=TARGET0_Y_U && y<=TARGET0_Y_D)? 1 : 0; //target이 있는 영역
+// assign target_on[1] = (x>=TARGET1_X_L && x<=TARGET1_X_R && y>=TARGET1_Y_U && y<=TARGET1_Y_D)? 1 : 0; //target이 있는 영역
+// assign target_on[2] = (x>=TARGET2_X_L && x<=TARGET2_X_R && y>=TARGET2_Y_U && y<=TARGET2_Y_D)? 1 : 0; //target이 있는 영역
+
+
+circle target0(.x(x), .y(y), .cir_x(TARGET_X_C), .cir_y(TARGET_Y_C), .cir_r(60), .cir_rgb({4'd15,4'd15,4'd15}), .circle_on(target_on[0]));
+circle target1(.x(x), .y(y), .cir_x(TARGET_X_C), .cir_y(TARGET_Y_C), .cir_r(35), .cir_rgb({4'd15,4'd15,4'd15}), .circle_on(target_on[1]));
+circle target2(.x(x), .y(y), .cir_x(TARGET_X_C), .cir_y(TARGET_Y_C), .cir_r(10), .cir_rgb({4'd15,4'd15,4'd15}), .circle_on(target_on[2]));
+
+
+
 
 //gauge bar
 assign gaugeshow_on = (x>=GAUGESHOW_X_L && x<=GAUGESHOW_X_R && y>=GAUGESHOW_Y_U && y<=GAUGESHOW_Y_D)? 1 : 0; //gaugebar 표시가 있는 영역
