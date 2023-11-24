@@ -406,24 +406,24 @@ end
 // color setting
 /*---------------------------------------------------------*/
 assign rgb = (font_bit & score_on)? {4'd0,  4'd0,   4'd15} : //blue text
-             (font_bit & life_on)? {4'd0,  4'd0,   4'd15} : //blue text
-             (font_bit & over_on)? {4'd0,  4'd0,   4'd15} : //blue text
-             (wall_on[0])? {4'd0,  4'd0,   4'd15} : //blue wall
-             (wall_on[1])? {4'd0,  4'd0,   4'd15} :  //blue wall
-             (wall_on[2])? {4'd0,  4'd0,   4'd15} : //blue wall
-             (target_on[2])? {4'd15,  4'd0,   4'd0} : //red target
-             (target_on[1])? {4'd15,  4'd9,   4'd0} : //orange target
-             (target_on[0])? {4'd0,  4'd15,   4'd0} : //green target
-             (gaugeguide_on)? {4'd0,  4'd0,   4'd0} : //gauge guide bar                    
-             (gaugeshow_on)? {4'd0,  4'd0,   4'd0} : //black gauge bar          
-             (gaugebar_on[0])? {4'd0,  4'd0,   4'd15} : //blue gauge bar
-             (gaugebar_on[1])? {4'd0,  4'd15,   4'd0} : //green gauge bar
-             (gaugebar_on[2])? {4'd15,  4'd15,   4'd0} : //yellow gauge bar
-             (gaugebar_on[3])? {4'd15,  4'd9,   4'd0} : //orange gauge bar
-             (gaugebar_on[4])? {4'd15,  4'd0,   4'd0} : //red gauge bar
+             (font_bit & life_on)?  {4'd0,  4'd0,   4'd15} : //blue text
+             (font_bit & over_on)?  {4'd0,  4'd0,   4'd15} : //blue text
+             (wall_on[0])?          {4'd0,  4'd0,   4'd15} : //blue wall
+             (wall_on[1])?          {4'd0,  4'd0,   4'd15} :  //blue wall
+             (wall_on[2])?          {4'd0,  4'd0,   4'd15} : //blue wall
+             (target_on[2])?        {4'd15,  4'd0,   4'd0} : //red target
+             (target_on[1])?        {4'd15,  4'd9,   4'd0} : //orange target
+             (target_on[0])?        {4'd0,  4'd15,   4'd0} : //green target
+             (gaugeguide_on)?       {4'd0,  4'd0,   4'd0} : //gauge guide bar                    
+             (gaugeshow_on)?        {4'd0,  4'd0,   4'd0} : //black gauge bar          
+             (gaugebar_on[0])?      {4'd0,  4'd0,   4'd15} : //blue gauge bar
+             (gaugebar_on[1])?      {4'd0,  4'd15,   4'd0} : //green gauge bar
+             (gaugebar_on[2])?      {4'd15,  4'd15,   4'd0} : //yellow gauge bar
+             (gaugebar_on[3])?      {4'd15,  4'd9,   4'd0} : //orange gauge bar
+             (gaugebar_on[4])?      {4'd15,  4'd0,   4'd0} : //red gauge bar
              (circle_on)?           {4'd15, 4'd15,  4'd15} : // circle_test
 //             (bar_on)? 3'b010 : // green bar
 //             (ball_on)? 3'b100 : // red ball
-             3'b111; //white background
+                                    {4'd15, 4'd15,  4'd15}; //white background
 
 endmodule
