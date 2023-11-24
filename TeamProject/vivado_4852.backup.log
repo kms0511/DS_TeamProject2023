@@ -2,20 +2,16 @@
 # Vivado v2022.2 (64-bit)
 # SW Build 3671981 on Fri Oct 14 05:00:03 MDT 2022
 # IP Build 3669848 on Fri Oct 14 08:30:02 MDT 2022
-# Start of session at: Fri Nov 24 15:44:43 2023
-# Process ID: 4616
+# Start of session at: Fri Nov 24 15:26:44 2023
+# Process ID: 4852
 # Current directory: D:/Xilinx/DS/DS_TeamProject2023/TeamProject
-# Command line: vivado.exe -gui_launcher_event rodinguilauncherevent4168 D:\Xilinx\DS\DS_TeamProject2023\TeamProject\2023TeamProject.xpr
+# Command line: vivado.exe -gui_launcher_event rodinguilauncherevent3824 D:\Xilinx\DS\DS_TeamProject2023\TeamProject\2023TeamProject.xpr
 # Log file: D:/Xilinx/DS/DS_TeamProject2023/TeamProject/vivado.log
 # Journal file: D:/Xilinx/DS/DS_TeamProject2023/TeamProject\vivado.jou
 # Running On: Rhaudtjd-MSI-GE63VR-7RE, OS: Windows, CPU Frequency: 2808 MHz, CPU Physical cores: 4, Host memory: 25649 MB
 #-----------------------------------------------------------
 start_gui
 open_project D:/Xilinx/DS/DS_TeamProject2023/TeamProject/2023TeamProject.xpr
-Scanning sources...
-Finished scanning sources
-INFO: [IP_Flow 19-234] Refreshing IP repositories
-INFO: [IP_Flow 19-1704] No user IP repositories specified
 WARNING: [Board 49-26] cannot add Board Part xilinx.com:kc705:part0:1.6 available at D:/Xilinx/Vivado/2022.2/data/xhub/boards/XilinxBoardStore/boards/Xilinx/kc705/1.6/board.xml as part xc7k325tffg900-2 specified in board_part file is either invalid or not available
 WARNING: [Board 49-26] cannot add Board Part xilinx.com:kcu105:part0:1.6 available at D:/Xilinx/Vivado/2022.2/data/xhub/boards/XilinxBoardStore/boards/Xilinx/kcu105/1.6/board.xml as part xcku040-ffva1156-2-e specified in board_part file is either invalid or not available
 WARNING: [Board 49-26] cannot add Board Part xilinx.com:kcu105:part0:1.7 available at D:/Xilinx/Vivado/2022.2/data/xhub/boards/XilinxBoardStore/boards/Xilinx/kcu105/1.7/board.xml as part xcku040-ffva1156-2-e specified in board_part file is either invalid or not available
@@ -61,10 +57,98 @@ WARNING: [Board 49-26] cannot add Board Part xilinx.com:zcu216:part0:2.0 availab
 WARNING: [Board 49-26] cannot add Board Part xilinx.com:zcu216ld:part0:2.0 available at D:/Xilinx/Vivado/2022.2/data/xhub/boards/XilinxBoardStore/boards/Xilinx/zcu216ld/production/2.0/board.xml as part xczu59dr-ffvf1760-2-i specified in board_part file is either invalid or not available
 WARNING: [Board 49-26] cannot add Board Part xilinx.com:zcu670:part0:2.0 available at D:/Xilinx/Vivado/2022.2/data/xhub/boards/XilinxBoardStore/boards/Xilinx/zcu670/2.0/board.xml as part xczu67dr-fsve1156-2-i specified in board_part file is either invalid or not available
 WARNING: [Board 49-26] cannot add Board Part xilinx.com:zcu670ld:part0:1.0 available at D:/Xilinx/Vivado/2022.2/data/xhub/boards/XilinxBoardStore/boards/Xilinx/zcu670ld/1.0/board.xml as part xczu57dr-fsve1156-2-i specified in board_part file is either invalid or not available
+Scanning sources...
+Finished scanning sources
+INFO: [IP_Flow 19-234] Refreshing IP repositories
+INFO: [IP_Flow 19-1704] No user IP repositories specified
 INFO: [IP_Flow 19-2313] Loaded Vivado IP repository 'D:/Xilinx/Vivado/2022.2/data/ip'.
-open_project: Time (s): cpu = 00:00:28 ; elapsed = 00:00:11 . Memory (MB): peak = 1130.707 ; gain = 347.496
+ERROR: [Common 17-223] Fail to read message file D:/Xilinx/DS/DS_TeamProject2023/TeamProject/2023TeamProject.runs/clk_wiz_0_synth_1/vivado.pb. Please check permission of the directory and existence of the file.
+open_project: Time (s): cpu = 00:00:32 ; elapsed = 00:00:15 . Memory (MB): peak = 1133.496 ; gain = 366.883
+ERROR: [Common 17-39] 'open_project' failed due to earlier errors.
+update_compile_order -fileset sources_1
+close [ open D:/Xilinx/DS/DS_TeamProject2023/TeamProject/2023TeamProject.srcs/sources_1/new/keypad.v w ]
+add_files D:/Xilinx/DS/DS_TeamProject2023/TeamProject/2023TeamProject.srcs/sources_1/new/keypad.v
+WARNING: [filemgmt 56-12] File 'D:/Xilinx/DS/DS_TeamProject2023/TeamProject/2023TeamProject.srcs/sources_1/new/keypad.v' cannot be added to the project because it already exists in the project, skipping this file
+update_compile_order -fileset sources_1
+close [ open D:/Xilinx/DS/DS_TeamProject2023/TeamProject/2023TeamProject.srcs/sources_1/new/debounce.v w ]
+add_files D:/Xilinx/DS/DS_TeamProject2023/TeamProject/2023TeamProject.srcs/sources_1/new/debounce.v
+WARNING: [filemgmt 56-12] File 'D:/Xilinx/DS/DS_TeamProject2023/TeamProject/2023TeamProject.srcs/sources_1/new/debounce.v' cannot be added to the project because it already exists in the project, skipping this file
+update_compile_order -fileset sources_1
+close [ open D:/Xilinx/DS/DS_TeamProject2023/TeamProject/2023TeamProject.srcs/sources_1/new/graph_mod.v w ]
+add_files D:/Xilinx/DS/DS_TeamProject2023/TeamProject/2023TeamProject.srcs/sources_1/new/graph_mod.v
+WARNING: [filemgmt 56-12] File 'D:/Xilinx/DS/DS_TeamProject2023/TeamProject/2023TeamProject.srcs/sources_1/new/graph_mod.v' cannot be added to the project because it already exists in the project, skipping this file
+update_compile_order -fileset sources_1
+close [ open D:/Xilinx/DS/DS_TeamProject2023/TeamProject/2023TeamProject.srcs/sources_1/new/sync_mod.v w ]
+add_files D:/Xilinx/DS/DS_TeamProject2023/TeamProject/2023TeamProject.srcs/sources_1/new/sync_mod.v
+WARNING: [filemgmt 56-12] File 'D:/Xilinx/DS/DS_TeamProject2023/TeamProject/2023TeamProject.srcs/sources_1/new/sync_mod.v' cannot be added to the project because it already exists in the project, skipping this file
+update_compile_order -fileset sources_1
+create_ip -name clk_wiz -vendor xilinx.com -library ip -version 6.0 -module_name clk_wiz_1
+set_property -dict [list \
+  CONFIG.CLKOUT1_JITTER {319.783} \
+  CONFIG.CLKOUT1_PHASE_ERROR {246.739} \
+  CONFIG.CLKOUT1_REQUESTED_OUT_FREQ {25.175} \
+  CONFIG.MMCM_CLKFBOUT_MULT_F {36.375} \
+  CONFIG.MMCM_CLKOUT0_DIVIDE_F {36.125} \
+  CONFIG.MMCM_DIVCLK_DIVIDE {4} \
+] [get_ips clk_wiz_1]
+generate_target {instantiation_template} [get_files d:/Xilinx/DS/DS_TeamProject2023/TeamProject/2023TeamProject.srcs/sources_1/ip/clk_wiz_1/clk_wiz_1.xci]
+INFO: [IP_Flow 19-1686] Generating 'Instantiation Template' target for IP 'clk_wiz_1'...
+generate_target all [get_files  d:/Xilinx/DS/DS_TeamProject2023/TeamProject/2023TeamProject.srcs/sources_1/ip/clk_wiz_1/clk_wiz_1.xci]
+INFO: [IP_Flow 19-1686] Generating 'Synthesis' target for IP 'clk_wiz_1'...
+INFO: [IP_Flow 19-1686] Generating 'Simulation' target for IP 'clk_wiz_1'...
+INFO: [IP_Flow 19-1686] Generating 'Implementation' target for IP 'clk_wiz_1'...
+INFO: [IP_Flow 19-1686] Generating 'Change Log' target for IP 'clk_wiz_1'...
+catch { config_ip_cache -export [get_ips -all clk_wiz_1] }
+INFO: [IP_Flow 19-6924] IPCACHE: Running cache check for IP inst: clk_wiz_1
+export_ip_user_files -of_objects [get_files d:/Xilinx/DS/DS_TeamProject2023/TeamProject/2023TeamProject.srcs/sources_1/ip/clk_wiz_1/clk_wiz_1.xci] -no_script -sync -force -quiet
+create_ip_run [get_files -of_objects [get_fileset sources_1] d:/Xilinx/DS/DS_TeamProject2023/TeamProject/2023TeamProject.srcs/sources_1/ip/clk_wiz_1/clk_wiz_1.xci]
+launch_runs clk_wiz_1_synth_1 -jobs 8
+INFO: [IP_Flow 19-6924] IPCACHE: Running cache check for IP inst: clk_wiz_1
+[Fri Nov 24 15:37:28 2023] Launched clk_wiz_1_synth_1...
+Run output will be captured here: D:/Xilinx/DS/DS_TeamProject2023/TeamProject/2023TeamProject.runs/clk_wiz_1_synth_1/runme.log
+export_simulation -of_objects [get_files d:/Xilinx/DS/DS_TeamProject2023/TeamProject/2023TeamProject.srcs/sources_1/ip/clk_wiz_1/clk_wiz_1.xci] -directory D:/Xilinx/DS/DS_TeamProject2023/TeamProject/2023TeamProject.ip_user_files/sim_scripts -ip_user_files_dir D:/Xilinx/DS/DS_TeamProject2023/TeamProject/2023TeamProject.ip_user_files -ipstatic_source_dir D:/Xilinx/DS/DS_TeamProject2023/TeamProject/2023TeamProject.ip_user_files/ipstatic -lib_map_path [list {modelsim=D:/Xilinx/DS/DS_TeamProject2023/TeamProject/2023TeamProject.cache/compile_simlib/modelsim} {questa=D:/Xilinx/DS/DS_TeamProject2023/TeamProject/2023TeamProject.cache/compile_simlib/questa} {riviera=D:/Xilinx/DS/DS_TeamProject2023/TeamProject/2023TeamProject.cache/compile_simlib/riviera} {activehdl=D:/Xilinx/DS/DS_TeamProject2023/TeamProject/2023TeamProject.cache/compile_simlib/activehdl}] -use_ip_compiled_libs -force -quiet
+close [ open D:/Xilinx/DS/DS_TeamProject2023/TeamProject/2023TeamProject.srcs/sources_1/new/font_rom.vhd w ]
+add_files D:/Xilinx/DS/DS_TeamProject2023/TeamProject/2023TeamProject.srcs/sources_1/new/font_rom.vhd
+update_compile_order -fileset sources_1
+export_ip_user_files -of_objects  [get_files D:/Xilinx/DS/DS_TeamProject2023/TeamProject/2023TeamProject.srcs/sources_1/new/font_rom.vhd] -no_script -reset -force -quiet
+remove_files  D:/Xilinx/DS/DS_TeamProject2023/TeamProject/2023TeamProject.srcs/sources_1/new/font_rom.vhd
+file delete -force D:/Xilinx/DS/DS_TeamProject2023/TeamProject/2023TeamProject.srcs/sources_1/new/font_rom.vhd
+close [ open D:/Xilinx/DS/DS_TeamProject2023/TeamProject/2023TeamProject.srcs/sources_1/new/font_rom.vhd w ]
+add_files D:/Xilinx/DS/DS_TeamProject2023/TeamProject/2023TeamProject.srcs/sources_1/new/font_rom.vhd
 update_compile_order -fileset sources_1
 update_compile_order -fileset sources_1
-update_compile_order -fileset sources_1
+export_ip_user_files -of_objects  [get_files d:/Xilinx/DS/DS_TeamProject2023/TeamProject/2023TeamProject.srcs/sources_1/ip/clk_wiz_1/clk_wiz_1.xci] -no_script -reset -force -quiet
+remove_files  -fileset clk_wiz_1 d:/Xilinx/DS/DS_TeamProject2023/TeamProject/2023TeamProject.srcs/sources_1/ip/clk_wiz_1/clk_wiz_1.xci
+INFO: [Project 1-386] Moving file 'd:/Xilinx/DS/DS_TeamProject2023/TeamProject/2023TeamProject.srcs/sources_1/ip/clk_wiz_1/clk_wiz_1.xci' from fileset 'clk_wiz_1' to fileset 'sources_1'.
+file delete -force d:/Xilinx/DS/DS_TeamProject2023/TeamProject/2023TeamProject.srcs/sources_1/ip/clk_wiz_1
+file delete -force d:/Xilinx/DS/DS_TeamProject2023/TeamProject/2023TeamProject.gen/sources_1/ip/clk_wiz_1
+export_ip_user_files -of_objects  [get_files D:/Xilinx/DS/DS_TeamProject2023/TeamProject/2023TeamProject.srcs/sources_1/ip/clk_wiz_0/clk_wiz_0.xci] -no_script -reset -force -quiet
+remove_files  -fileset clk_wiz_0 D:/Xilinx/DS/DS_TeamProject2023/TeamProject/2023TeamProject.srcs/sources_1/ip/clk_wiz_0/clk_wiz_0.xci
+INFO: [Project 1-386] Moving file 'D:/Xilinx/DS/DS_TeamProject2023/TeamProject/2023TeamProject.srcs/sources_1/ip/clk_wiz_0/clk_wiz_0.xci' from fileset 'clk_wiz_0' to fileset 'sources_1'.
+create_ip -name clk_wiz -vendor xilinx.com -library ip -version 6.0 -module_name clk_wiz_0
+set_property -dict [list \
+  CONFIG.CLKOUT1_JITTER {319.783} \
+  CONFIG.CLKOUT1_PHASE_ERROR {246.739} \
+  CONFIG.CLKOUT1_REQUESTED_OUT_FREQ {25.175} \
+  CONFIG.MMCM_CLKFBOUT_MULT_F {36.375} \
+  CONFIG.MMCM_CLKOUT0_DIVIDE_F {36.125} \
+  CONFIG.MMCM_DIVCLK_DIVIDE {4} \
+] [get_ips clk_wiz_0]
+generate_target {instantiation_template} [get_files d:/Xilinx/DS/DS_TeamProject2023/TeamProject/2023TeamProject.srcs/sources_1/ip/clk_wiz_0/clk_wiz_0.xci]
+INFO: [IP_Flow 19-1686] Generating 'Instantiation Template' target for IP 'clk_wiz_0'...
+generate_target all [get_files  d:/Xilinx/DS/DS_TeamProject2023/TeamProject/2023TeamProject.srcs/sources_1/ip/clk_wiz_0/clk_wiz_0.xci]
+INFO: [IP_Flow 19-1686] Generating 'Synthesis' target for IP 'clk_wiz_0'...
+INFO: [IP_Flow 19-1686] Generating 'Simulation' target for IP 'clk_wiz_0'...
+INFO: [IP_Flow 19-1686] Generating 'Implementation' target for IP 'clk_wiz_0'...
+INFO: [IP_Flow 19-1686] Generating 'Change Log' target for IP 'clk_wiz_0'...
+catch { config_ip_cache -export [get_ips -all clk_wiz_0] }
+INFO: [IP_Flow 19-6924] IPCACHE: Running cache check for IP inst: clk_wiz_0
+export_ip_user_files -of_objects [get_files d:/Xilinx/DS/DS_TeamProject2023/TeamProject/2023TeamProject.srcs/sources_1/ip/clk_wiz_0/clk_wiz_0.xci] -no_script -sync -force -quiet
+create_ip_run [get_files -of_objects [get_fileset sources_1] d:/Xilinx/DS/DS_TeamProject2023/TeamProject/2023TeamProject.srcs/sources_1/ip/clk_wiz_0/clk_wiz_0.xci]
+launch_runs clk_wiz_0_synth_1 -jobs 8
+INFO: [IP_Flow 19-6924] IPCACHE: Running cache check for IP inst: clk_wiz_0
+[Fri Nov 24 15:41:24 2023] Launched clk_wiz_0_synth_1...
+Run output will be captured here: D:/Xilinx/DS/DS_TeamProject2023/TeamProject/2023TeamProject.runs/clk_wiz_0_synth_1/runme.log
+export_simulation -of_objects [get_files d:/Xilinx/DS/DS_TeamProject2023/TeamProject/2023TeamProject.srcs/sources_1/ip/clk_wiz_0/clk_wiz_0.xci] -directory D:/Xilinx/DS/DS_TeamProject2023/TeamProject/2023TeamProject.ip_user_files/sim_scripts -ip_user_files_dir D:/Xilinx/DS/DS_TeamProject2023/TeamProject/2023TeamProject.ip_user_files -ipstatic_source_dir D:/Xilinx/DS/DS_TeamProject2023/TeamProject/2023TeamProject.ip_user_files/ipstatic -lib_map_path [list {modelsim=D:/Xilinx/DS/DS_TeamProject2023/TeamProject/2023TeamProject.cache/compile_simlib/modelsim} {questa=D:/Xilinx/DS/DS_TeamProject2023/TeamProject/2023TeamProject.cache/compile_simlib/questa} {riviera=D:/Xilinx/DS/DS_TeamProject2023/TeamProject/2023TeamProject.cache/compile_simlib/riviera} {activehdl=D:/Xilinx/DS/DS_TeamProject2023/TeamProject/2023TeamProject.cache/compile_simlib/activehdl}] -use_ip_compiled_libs -force -quiet
 exit
-INFO: [Common 17-206] Exiting Vivado at Fri Nov 24 15:46:11 2023...
+INFO: [Common 17-206] Exiting Vivado at Fri Nov 24 15:42:40 2023...
