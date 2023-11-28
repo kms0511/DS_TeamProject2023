@@ -178,8 +178,10 @@ assign gaugeguide_on = (x>=GAUGEGUIDE_X_L && x<=GAUGEGUIDE_X_R && y>=GAUGEGUIDE_
 /*---------------------------------------------------------*/
 // circle test
 /*---------------------------------------------------------*/
-wire circle_on;
-circle circle_test(.x(x), .y(y), .cir_x(200), .cir_y(200), .cir_r(BALL_R), .cir_rgb({4'd15,4'd15,4'd15}), .circle_on(circle_on));
+
+//뭔지 몰라서 일단 비활성화함
+//wire circle_on;
+//circle circle_test(.x(x), .y(y), .cir_x(200), .cir_y(200), .cir_r(BALL_R), .cir_rgb({4'd15,4'd15,4'd15}), .circle_on(circle_on));
 
 wire [7:0] score_a, score_b;
 scoring scoring_inst(
@@ -331,7 +333,7 @@ assign rgb = (font_bit & red_on)?        RGB_RED : //RED text_RED
              (gaugebar_on[2])?      RGB_LIGHTYELLOW: //lightyellow gauge bar
              (gaugebar_on[3])?      RGB_LIGHTORANGE: //lightorange gauge bar
              (gaugebar_on[4])?      RGB_LIGHTRED   : //lightred gauge bar
-             (circle_on)?           RGB_ORANGE : // circle_test
+            // (circle_on)?           RGB_ORANGE : // circle_test
                                     RGB_WHITE ; //white background
                                     
                                     
@@ -505,7 +507,7 @@ reg powsel,gaugereset; // for checking power select is finished
 wire [3:0] pow;
 wire reachwall1, reachwall2;
 
-assign pow = (gaugeshow_x>=GAUGEBAR0_X_L &&gaugeshow_x<=GAUGEBAR0_X_R) ? 6 :
+assign pow = (gaugeshow_x>=GAUGEBAR0_X_L &&gaugeshow_x<=GAUGEBAR0_X_R) ? 6 :  // 좀 더 어렵게 이 부분 파라미터 대신 좌표 판별로 한 10개 이상으로 쪼개도 괜찮을듯? 
              (gaugeshow_x>=GAUGEBAR1_X_L &&gaugeshow_x<=GAUGEBAR1_X_R) ? 8 :
              (gaugeshow_x>=GAUGEBAR2_X_L &&gaugeshow_x<=GAUGEBAR2_X_R) ? 10 :
              (gaugeshow_x>=GAUGEBAR3_X_L &&gaugeshow_x<=GAUGEBAR3_X_R) ? 12 :
