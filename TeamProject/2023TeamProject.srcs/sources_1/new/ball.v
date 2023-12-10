@@ -1,14 +1,15 @@
 `timescale 1ns / 1ps
 
 module ball(input clk, input rst,input frame_tick, input [9:0] x, y, output reg [9:0] ball_x, ball_y,  //클럭, 리셋, 프레임갱신신호, 현재 출력중인 x,y좌표, 이 모듈의 Ball의 현x,y좌표
-input [4:0] key, key_pulse, input [2:0] turn_st, output ball_on, output ball_edge, output hand_on, //키패드입력, 키패드펄스입력 , 턴 상태 입력, Ball 구성요소 표시를 위한 출력3개 
+input [4:0] key, key_pulse, input [2:0] turn_st, output ball_on, ball_edge, hand_on, real_edge, //키패드입력, 키패드펄스입력 , 턴 상태 입력, Ball 구성요소 표시를 위한 출력4개 
 input [3:0] sx_in, sy_in, output [3:0] sx, sy, output [1:0] xdir, ydir, // x속력입력,y속력입력,현재x속력,현재y속력,현재x방향,현재y방향
 input [9:0] ball_x_in1, ball_y_in1, input [3:0] sx_in_1, sy_in_1, input [1:0] xdir_1, ydir_1, // 이 Ball 외의 다른ball들의 현재 x,y 좌표, 현재 x,y 속력, 현재 x,y 방향값입력. 
 input [9:0] ball_x_in2, ball_y_in2, input [3:0] sx_in_2, sy_in_2, input [1:0] xdir_2, ydir_2,
 input [9:0] ball_x_in3, ball_y_in3, input [3:0] sx_in_3, sy_in_3, input [1:0] xdir_3, ydir_3,
 input [9:0] ball_x_in4, ball_y_in4, input [3:0] sx_in_4, sy_in_4, input [1:0] xdir_4, ydir_4,
 input [9:0] ball_x_in5, ball_y_in5, input [3:0] sx_in_5, sy_in_5, input [1:0] xdir_5, ydir_5,
-output broom_on,broom_on_up,broom_on_left,broom_on_right // broom 표시를 위한 출력
+output broom_on_center,broom_on_up,broom_on_left,broom_on_right,broom_on_center_design,broom_on_up_design, // broom 표시를 위한 출력
+output fin
 );
 
 parameter BALL_RAD = 15; // Ball의 반지름 정의
@@ -19,10 +20,42 @@ parameter ST_X = 319;  // 시작장소 x좌표
 parameter ST_Y = 449; // 시작장소 y좌표
 
 
-//assign broom_on = ((turn_st==0)&&(x>=(ball_x-15) && x<=(ball_x+15) && y>=(ball_y-30) && y<=(ball_y-19)))? 1 : 0; // 중앙(기본 broom 표시위치) 
-//assign broom_on_up = ((turn_st==0)&&(x>=(ball_x-15) && x<=(ball_x+15) && y>=(ball_y-50) && y<=(ball_y-39)))? 1 : 0; // 위(broom 정면 작동시 표시위치) 
-//assign broom_on_left = ((turn_st==0)&&(x>=(ball_x-25) && x<=(ball_x+5) && y>=(ball_y-30) && y<=(ball_y-19)))? 1 : 0; // 왼쪽(broom 왼쪽방향 작동시 표시 위치)
-//assign broom_right = ((turn_st==0)&&(x>=(ball_x+25) && x<=(ball_x+55) && y>=(ball_y-30) && y<=(ball_y-19)))? 1 : 0; // 오른쪽(broom 오른쪽방향 작동시 표시 위치)
+reg broom_center, broom_up, broom_left, broom_right;
+
+assign broom_on_center = ((broom_center==1) &&(turn_st==0)&&(x>=(ball_x-20) && x<=(ball_x+20) && y>=(ball_y-25) && y<=(ball_y-19)))? 1 : 0; // 중앙(기본 broom 표시위치) 
+assign broom_on_center_design = ((broom_center==1) &&(turn_st==0)&&(x>=(ball_x-10) && x<=(ball_x+10) && y>=(ball_y-23) && y<=(ball_y-20)))? 1 : 0; // 중앙(기본 broom 표시위치)
+
+assign broom_on_up = ((broom_up==1) && (turn_st==0)&&(x>=(ball_x-20) && x<=(ball_x+20) && y>=(ball_y-45) && y<=(ball_y-39)))? 1 : 0; // 위(broom 정면 작동시 표시위치) 
+assign broom_on_up_design = ((broom_up==1) && (turn_st==0)&&(x>=(ball_x-10) && x<=(ball_x+10) && y>=(ball_y-43) && y<=(ball_y-40)))? 1 : 0; // 위(broom 정면 작동시 표시위치) 
+
+assign broom_on_left = ((broom_left==1)&&(x>=(ball_x-25) && x<=(ball_x+5) && y>=(ball_y-30) && y<=(ball_y-19)))? 1 : 0; // 왼쪽(broom 왼쪽방향 작동시 표시 위치)
+assign broom_on_right = ((broom_right==1)&&(x>=(ball_x+25) && x<=(ball_x+55) && y>=(ball_y-30) && y<=(ball_y-19)))? 1 : 0; // 오른쪽(broom 오른쪽방향 작동시 표시 위치)
+
+reg [1:0] broom_c_state, broom_n_state; 
+
+parameter BROOM_READY = 2'b00, BROOM_SET = 2'b01, BROOM_UP = 2'b10, BROOM_STOP = 2'b11;
+
+always @ (*) begin
+    case(broom_c_state)
+        BROOM_READY: begin broom_center=0 ; broom_up=0; broom_left=0; broom_right=0; if(broomdisable) broom_n_state = BROOM_STOP;
+                                                                                     else if(turn_st==0 &&((key_pulse==5'h1A)||(key_pulse==5'h1B))) broom_n_state = BROOM_SET;  
+                                                                                     else broom_n_state = BROOM_READY; end
+        BROOM_SET: begin broom_center=1 ; broom_up=0; broom_left=0; broom_right=0; if(broomdisable) broom_n_state = BROOM_STOP;
+                                                                                   else if(turn_st==0 &&((key_pulse==5'h1A)||(key_pulse==5'h1B)))  broom_n_state = BROOM_UP; 
+                                                                                   else broom_n_state = BROOM_SET; end
+        BROOM_UP: begin broom_center=0; broom_up=1; broom_left=0; broom_right=0; if(broomdisable) broom_n_state = BROOM_STOP;
+                                                                                 else if (turn_st==0 &&((key_pulse==5'h1A)||(key_pulse==5'h1B))) broom_n_state = BROOM_SET;
+                                                                                 else broom_n_state = BROOM_UP; end
+        BROOM_STOP: begin broom_center=0 ; broom_up=0; broom_left=0; broom_right=0; broom_n_state = BROOM_READY; end
+        default: begin broom_center=0 ; broom_up=0; broom_left=0; broom_right=0; broom_n_state = BROOM_READY; end
+        endcase
+end
+
+always @ (posedge clk, posedge rst) begin
+    if(rst | turn_st !=0 | broomdisable) broom_c_state <= BROOM_READY;
+    else broom_c_state <= broom_n_state; 
+end
+
 
 /////////////////////////////
 /// wall collison detect ///
@@ -63,69 +96,84 @@ wire [1:0] angle_b1_dat, angle_b2_dat, angle_b3_dat, angle_b4_dat, angle_b5_dat;
 // 각 ball과의 충돌시 x위치 계산을 통한 좌측, 중앙, 우측 충돌 감지(턴 0일경우 0중앙, 1 좌측, 2 우측) (턴 3일경우 0 중앙 2 우측 1 좌측).
 // COLLMARGIN은 중앙감지의 마진 범위
 
-assign angle_b1_dat = ((ball_x_in1 - ball_x)>COLLMARGIN)?    1 :
-                      ((ball_x_in1 - ball_x)<-COLLMARGIN)?   2 : 0;
+assign angle_b1_dat =((ball_x_in1 < (ball_x + COLLMARGIN))&&((ball_x_in1+ COLLMARGIN) > ball_x ))? 0 :
+                     (ball_x_in1 >= (ball_x + COLLMARGIN))? 1 :
+                     ((ball_x_in1+ COLLMARGIN) <= ball_x )? 2 : 0;
                       
-assign angle_b2_dat = ((ball_x_in2 - ball_x)>COLLMARGIN)?    1 :
-                      ((ball_x_in2 - ball_x)<-COLLMARGIN)?   2 : 0;
+assign angle_b2_dat =((ball_x_in2 < (ball_x + COLLMARGIN))&&((ball_x_in2+ COLLMARGIN) > ball_x ))? 0 :
+                     (ball_x_in2 >= (ball_x + COLLMARGIN))? 1 :
+                     ((ball_x_in2+ COLLMARGIN) <= ball_x )? 2 : 0;
 
-assign angle_b3_dat = ((ball_x_in3 - ball_x)>COLLMARGIN)?    1 :
-                      ((ball_x_in3 - ball_x)<-COLLMARGIN)?   2 : 0;
+assign angle_b3_dat =((ball_x_in3 < (ball_x + COLLMARGIN))&&((ball_x_in3+ COLLMARGIN) > ball_x ))? 0 :
+                     (ball_x_in3 >= (ball_x + COLLMARGIN))? 1 :
+                     ((ball_x_in3+ COLLMARGIN) <= ball_x )? 2 : 0;
 
-assign angle_b4_dat = ((ball_x_in4 - ball_x)>COLLMARGIN)?    1 :
-                      ((ball_x_in4 - ball_x)<-COLLMARGIN)?   2 : 0;
+assign angle_b4_dat =((ball_x_in4 < (ball_x + COLLMARGIN))&&((ball_x_in4+ COLLMARGIN) > ball_x ))? 0 :
+                     (ball_x_in4 >= (ball_x + COLLMARGIN))? 1 :
+                     ((ball_x_in4+ COLLMARGIN) <= ball_x )? 2 : 0;
                       
-assign angle_b5_dat = ((ball_x_in5 - ball_x)>COLLMARGIN)?    1 :
-                      ((ball_x_in5 - ball_x)<-COLLMARGIN)?   2 : 0;
+assign angle_b5_dat =((ball_x_in5 < (ball_x + COLLMARGIN))&&((ball_x_in5+ COLLMARGIN) > ball_x ))? 0 :
+                     (ball_x_in5 >= (ball_x + COLLMARGIN))? 1 :
+                     ((ball_x_in5+ COLLMARGIN) <= ball_x )? 2 : 0;
                       
 wire [1:0] collib1, collib2, collib3, collib4, collib5; // 각 ball과의 y좌표 차이 계산을 통한 충돌 방향 변수
 //각 ball과의 y위치 계산을 통한 상단, 중앙, 하단 충돌 감지(턴 0일경우 0중앙, 1 상측, 2 하측) (턴 3일경우 0 중앙 2 상측 1 하측). 
 // COLLMARGIN은 중앙감지의 마진 범위
 
-assign collib1 = ((ball_y_in1-ball_y)<0)? 1: ((ball_y_in1-ball_y)>0)? 2: 0;
-assign collib2 = ((ball_y_in2-ball_y)<0)? 1: ((ball_y_in2-ball_y)>0)? 2: 0;
-assign collib3 = ((ball_y_in3-ball_y)<0)? 1: ((ball_y_in3-ball_y)>0)? 2: 0;
-assign collib4 = ((ball_y_in4-ball_y)<0)? 1: ((ball_y_in4-ball_y)>0)? 2: 0;
-assign collib5 = ((ball_y_in5-ball_y)<0)? 1: ((ball_y_in5-ball_y)>0)? 2: 0;
+assign collib1 = ((ball_y_in1 - ball_y)<0)? 1: ((ball_y_in1 - ball_y)>0)? 2: 0;
+assign collib2 = ((ball_y_in2 - ball_y)<0)? 1: ((ball_y_in2 - ball_y)>0)? 2: 0;
+assign collib3 = ((ball_y_in3 - ball_y)<0)? 1: ((ball_y_in3 - ball_y)>0)? 2: 0;
+assign collib4 = ((ball_y_in4 - ball_y)<0)? 1: ((ball_y_in4 - ball_y)>0)? 2: 0;
+assign collib5 = ((ball_y_in5 - ball_y)<0)? 1: ((ball_y_in5 - ball_y)>0)? 2: 0;
 
 wire [3:0] collidetect1, collidetect2, collidetect3, collidetect4, collidetect5; // 위의 x연산, y연산 값을 이용한 충돌 방향 확정 변수
  // 턴0일 경우 0: 좌상단 / 1: 상단중앙 / 2: 우상단  / 3: 좌측중앙 / 4: 우측중앙 / 5:좌하단 / 6: 하단중앙 / 7: 우하단
  // 턴3일 경우 0: 우하단 / 1: 하단중앙 / 2: 좌하단  / 3: 우측중앙 / 4: 좌측중앙  / 5: 우상단 / 6: 상단중앙 / 7: 좌상단
 
-assign collidetect1 = (angle_b1_dat==1)&&(collib1==2)? 0 :
-                      (angle_b1_dat==0)&&(collib1==2)? 1 :
-                      (angle_b1_dat==2)&&(collib1==2)? 2 :
-                      (angle_b1_dat==1)&&(collib1==1)? 5 :
-                      (angle_b1_dat==0)&&(collib1==1)? 6 : 
-                      (angle_b1_dat==2)&&(collib1==1)? 7 : 8;
+assign collidetect1 = ((angle_b1_dat==1)&&(collib1==2))? 0 :
+                      ((angle_b1_dat==0)&&(collib1==2))? 1 :
+                      ((angle_b1_dat==2)&&(collib1==2))? 2 :
+                      ((angle_b1_dat==1)&&(collib1==0))? 3 :
+                      ((angle_b1_dat==2)&&(collib1==0))? 4 :
+                      ((angle_b1_dat==1)&&(collib1==1))? 5 :
+                      ((angle_b1_dat==0)&&(collib1==1))? 6 : 
+                      ((angle_b1_dat==2)&&(collib1==1))? 7 : 8;
 
-assign collidetect2 = (angle_b2_dat==1)&&(collib2==2)? 0 :
-                      (angle_b2_dat==0)&&(collib2==2)? 1 :
-                      (angle_b2_dat==2)&&(collib2==2)? 2 :
-                      (angle_b2_dat==1)&&(collib2==1)? 5 :
-                      (angle_b2_dat==0)&&(collib2==1)? 6 : 
-                      (angle_b2_dat==2)&&(collib2==1)? 7 : 8;
+assign collidetect2 = ((angle_b2_dat==1)&&(collib2==2))? 0 :
+                      ((angle_b2_dat==0)&&(collib2==2))? 1 :
+                      ((angle_b2_dat==2)&&(collib2==2))? 2 :
+                      ((angle_b2_dat==1)&&(collib2==0))? 3 :
+                      ((angle_b2_dat==2)&&(collib2==0))? 4 :
+                      ((angle_b2_dat==1)&&(collib2==1))? 5 :
+                      ((angle_b2_dat==0)&&(collib2==1))? 6 : 
+                      ((angle_b2_dat==2)&&(collib2==1))? 7 : 8;
 
-assign collidetect3 = (angle_b3_dat==1)&&(collib3==2)? 0 :
-                      (angle_b3_dat==0)&&(collib3==2)? 1 :
-                      (angle_b3_dat==2)&&(collib3==2)? 2 :
-                      (angle_b3_dat==1)&&(collib3==1)? 5 :
-                      (angle_b3_dat==0)&&(collib3==1)? 6 : 
-                      (angle_b3_dat==2)&&(collib3==1)? 7 : 8;
+assign collidetect3 = ((angle_b3_dat==1)&&(collib3==2))? 0 :
+                      ((angle_b3_dat==0)&&(collib3==2))? 1 :
+                      ((angle_b3_dat==2)&&(collib3==2))? 2 :
+                      ((angle_b3_dat==1)&&(collib3==0))? 3 :
+                      ((angle_b3_dat==2)&&(collib3==0))? 4 :
+                      ((angle_b3_dat==1)&&(collib3==1))? 5 :
+                      ((angle_b3_dat==0)&&(collib3==1))? 6 : 
+                      ((angle_b3_dat==2)&&(collib3==1))? 7 : 8;
 
-assign collidetect4 = (angle_b4_dat==1)&&(collib4==2)? 0 :
-                      (angle_b4_dat==0)&&(collib4==2)? 1 :
-                      (angle_b4_dat==2)&&(collib4==2)? 2 :
-                      (angle_b4_dat==1)&&(collib4==1)? 5 :
-                      (angle_b4_dat==0)&&(collib4==1)? 6 : 
-                      (angle_b4_dat==2)&&(collib4==1)? 7 : 8;
+assign collidetect4 = ((angle_b4_dat==1)&&(collib4==2))? 0 :
+                      ((angle_b4_dat==0)&&(collib4==2))? 1 :
+                      ((angle_b4_dat==2)&&(collib4==2))? 2 :
+                      ((angle_b4_dat==1)&&(collib4==0))? 3 :
+                      ((angle_b4_dat==2)&&(collib4==0))? 4 :
+                      ((angle_b4_dat==1)&&(collib4==1))? 5 :
+                      ((angle_b4_dat==0)&&(collib4==1))? 6 : 
+                      ((angle_b4_dat==2)&&(collib4==1))? 7 : 8;
 
-assign collidetect5 = (angle_b5_dat==1)&&(collib5==2)? 0 :
-                      (angle_b5_dat==0)&&(collib5==2)? 1 :
-                      (angle_b5_dat==2)&&(collib5==2)? 2 :
-                      (angle_b5_dat==1)&&(collib5==1)? 5 :
-                      (angle_b5_dat==0)&&(collib5==1)? 6 : 
-                      (angle_b5_dat==2)&&(collib5==1)? 7 : 8;
+assign collidetect5 = ((angle_b5_dat==1)&&(collib5==2))? 0 :
+                      ((angle_b5_dat==0)&&(collib5==2))? 1 :
+                      ((angle_b5_dat==2)&&(collib5==2))? 2 :
+                      ((angle_b5_dat==1)&&(collib5==0))? 3 :
+                      ((angle_b5_dat==2)&&(collib5==0))? 4 :
+                      ((angle_b5_dat==1)&&(collib5==1))? 5 :
+                      ((angle_b5_dat==0)&&(collib5==1))? 6 : 
+                      ((angle_b5_dat==2)&&(collib5==1))? 7 : 8;
 
 wire [3:0] collimux; // 실제 충돌 발생한 Ball에 따라 위의충돌 위치변수를 연결
 
@@ -171,20 +219,22 @@ else if (outof_field) mv_stop<=1;
 else if (meetballs==1) begin meet_calc<=1; broomdisable<=1;
     case(meet_state)
     0: if(meet_calc==1) begin mv_stop<=1; sav_dir<=1; sav_s<=1; meet_state_n<=1; end else meet_state_n<=0;
-    1: begin sav_dir<=0; sav_s<=0; copy_dir<=1; copy_s<=1; meet_state_n<=2; end
-    2: begin calcangle<=1; meet_state_n<=3; end
-    3: begin calcangle<=0; copy_dir<=0; copy_s<=0; mv_stop<=0; meet_calc<=0; meet_state_n<=4; end
-    4: begin if(frame_tick) meet_state_n<=0; else meet_state_n<=4; end
+    1: begin sav_dir<=0; sav_s<=0; calcangle<=1; meet_state_n<=2; end
+    2: begin calcangle<=0; copy_dir<=1; copy_s<=1; meet_state_n<=3; end
+    3: begin copy_dir<=0; copy_s<=0; meet_calc<=0; meet_state_n<=4; end
+    4: begin mv_stop<=0; meet_state_n<=5; end
+    5: begin if(frame_tick) meet_state_n<=0; else meet_state_n<=5; end
     default: meet_state_n<=0;
 endcase
 end
 else 
     case(meet_state)
     0: if(meet_calc==1) begin mv_stop<=1; sav_dir<=1; sav_s<=1; meet_state_n<=1; end else meet_state_n<=0;
-    1: begin sav_dir<=0; sav_s<=0; copy_dir<=1; copy_s<=1; meet_state_n<=2; end
-    2: begin calcangle<=1; meet_state_n<=3; end
-    3: begin calcangle<=0; copy_dir<=0; copy_s<=0; mv_stop<=0; meet_calc<=0; meet_state_n<=4; end
-    4: begin if(frame_tick) meet_state_n<=0; else meet_state_n<=4; end
+    1: begin sav_dir<=0; sav_s<=0; calcangle<=1; meet_state_n<=2; end
+    2: begin calcangle<=0; copy_dir<=1; copy_s<=1; meet_state_n<=3; end
+    3: begin copy_dir<=0; copy_s<=0; meet_calc<=0; meet_state_n<=4; end
+    4: begin mv_stop<=0; meet_state_n<=5; end
+    5: begin if(frame_tick) meet_state_n<=0; else meet_state_n<=5; end
     default: meet_state_n<=0;
 endcase
 end
@@ -250,70 +300,78 @@ reg sav_dir_fin_y;
 ////////////////////////////
 
 //턴0(이 ball이 가서 부딛힌경우)충돌방향 계산값을 이용하여 튕겨나갈 방향 연산. 각도는 45도 단위.
-always @(*) begin
+always @(posedge clk or posedge rst) begin
     if(rst | (turn_st==2) ) xdir_sav_mef <= 0;
     else if (calcangle) begin
         case(collimux)
         0: xdir_sav_mef <= 2;
         1: xdir_sav_mef <= 0;
         2: xdir_sav_mef <= 1;
+        3: xdir_sav_mef <= 2;
+        4: xdir_sav_mef <= 1;
         5: xdir_sav_mef <= 2;
         6: xdir_sav_mef <= 0;
         7: xdir_sav_mef <= 1;
         default: xdir_sav_mef <= 0;
         endcase
         end
-    else begin end
+    else xdir_sav_mef <= xdir_sav_mef;
       end
      
-      always @(*) begin
+      always @(posedge clk or posedge rst) begin
     if(rst | (turn_st==2) ) ydir_sav_mef <= 0;
     else if (calcangle) begin
         case(collimux)
         0: ydir_sav_mef <= 1;
         1: ydir_sav_mef <= 2;
         2: ydir_sav_mef <= 1;
+        3: ydir_sav_mef <= 0;
+        4: ydir_sav_mef <= 0;
         5: ydir_sav_mef <= 2;
         6: ydir_sav_mef <= 1;
         7: ydir_sav_mef <= 2;
         default: ydir_sav_mef <= 0;
         endcase
         end
-    else begin end
+    else ydir_sav_mef <= ydir_sav_mef;
       end
       
  
  //턴3(다른 ball이 와서 부딛힌경우)충돌방향 계산값을 이용하여 튕겨나갈 방향 연산. 각도는 45도 단위.  
- always @(*) begin
+ always @(posedge clk or posedge rst) begin
     if(rst | (turn_st==2) ) begin xdir_sav_othf<= 0;end
     else if (calcangle) begin
         case(collimux)
         7: xdir_sav_othf <= 1;
         6: xdir_sav_othf <= 0;
         5: xdir_sav_othf <= 2;
+        4: xdir_sav_othf <= 1;
+        3: xdir_sav_othf <= 2;
         2: xdir_sav_othf <= 1;
         1: xdir_sav_othf <= 0;
         0: xdir_sav_othf <= 2;
         default: xdir_sav_othf <= 0;
         endcase
         end
-    else begin end
+    else xdir_sav_othf <=xdir_sav_othf;
       end
 
- always @(*) begin
+ always @(posedge clk or posedge rst) begin
     if(rst | (turn_st==2) ) begin ydir_sav_othf<= 0;end
     else if (calcangle) begin
         case(collimux)
         7: ydir_sav_othf <= 1;
         6: ydir_sav_othf <= 1;
         5: ydir_sav_othf <= 1;
+        3: ydir_sav_othf <= 0;
+        4: ydir_sav_othf <= 0;
         2: ydir_sav_othf <= 2;
         1: ydir_sav_othf <= 2;
         0: ydir_sav_othf <= 2;
         default: ydir_sav_othf <= 0;
         endcase
         end    
-    else begin end
+    else ydir_sav_othf <= ydir_sav_othf;
       end
 
       
@@ -324,7 +382,7 @@ always @(posedge clk or posedge rst) begin
     if(rst| (turn_st==2)) xdir <= 0;
     else if(turn_st==1) xdir <= 1;
     else if(turn_st==6) xdir <= 0;
-  //  else if(turn_st==5) xdir <= 0;
+    //else if(turn_st==5) xdir <= 0;
     else if ((turn_st==3)&&(reach_left)) xdir <= 1;
     else if ((turn_st==3)&&(reach_right)) xdir <= 2;
     else if ((turn_st==3)&&(copy_dir)) xdir <= xdir_sav_othf;
@@ -374,13 +432,13 @@ reg [3:0] sx_sav_oth,sy_sav_oth; // 부딛힌 상대의 속력 저장
 reg [3:0] sx_sav_othf,sy_sav_othf; // 부딛힌 상대의 속력 처리값 저장
 
 // 리셋 혹은 턴2(시작대기)시 저장값 초기화, 저장신호 들어오면 이 ball의 현재 속력값 저장.
-always @(*) begin
+always @(posedge clk or posedge rst) begin
     if(rst | (turn_st==2) ) sx_sav_me <= 0;
     else if (sav_s) sx_sav_me <= sx/2;
     else sx_sav_me <= sx_sav_me;
       end
       
- always @(*) begin
+ always @(posedge clk or posedge rst) begin
     if(rst | (turn_st==2) ) sy_sav_me <= 0;
     else if (sav_s) sy_sav_me <= sy/2;
     else sy_sav_me <= sy_sav_me;
@@ -419,13 +477,15 @@ always @(posedge clk or posedge rst) begin
 
 
 //턴0(이 ball이 가서 부딛힌경우)충돌시 저장한 속력값을 이용하여 튕겨나갈 속력 연산. 소수점연산이 불가한 한계로, 대각선이동 거리 연산은 올림하여 연산하였음.
- always @(*) begin
+ always @(posedge clk or posedge rst) begin
     if(rst | (turn_st==2) ) begin sx_sav_mef<= 0;end
     else if (calcangle) begin
         case(collimux)
         0: sx_sav_mef <= ((sy_sav_me/2)<=1)? 1 : sy_sav_me/2;
         1: sx_sav_mef <= 0;
         2: sx_sav_mef <= ((sy_sav_me/2)<=1)? 1 : sy_sav_me/2;
+        3: sx_sav_mef <= 0;
+        4: sx_sav_mef <= 0;
         5: sx_sav_mef <= ((sy_sav_me/2)<=1)? 1 : sy_sav_me/2;
         6: sx_sav_mef <= 0;
         7: sx_sav_mef <= ((sy_sav_me/2)<=1)? 1 : sy_sav_me/2;
@@ -435,13 +495,15 @@ always @(posedge clk or posedge rst) begin
     else begin end
       end
 
-always @(*) begin
+always @(posedge clk or posedge rst) begin
     if(rst | (turn_st==2) ) begin sy_sav_mef<= 0;end
     else if (calcangle) begin
         case(collimux)
         0: sy_sav_mef <= ((sy_sav_me/2)<=1)? 1 : sy_sav_me/2;
         1: sy_sav_mef <= 0;
         2: sy_sav_mef <= ((sy_sav_me/2)<=1)? 1 : sy_sav_me/2;
+        3: sy_sav_mef <= 0;
+        4: sy_sav_mef <= 0;
         5: sy_sav_mef <= ((sy_sav_me/2)<=1)? 1 : sy_sav_me/2;
         6: sy_sav_mef <= 0;
         7: sy_sav_mef <= ((sy_sav_me/2)<=1)? 1 : sy_sav_me/2;
@@ -452,13 +514,15 @@ always @(*) begin
       end
  
  //턴3(다른  ball이 와서 부딛힌경우)충돌시 저장한 속력값을 이용하여 튕겨나갈 속력 연산. 소수점연산이 불가한 한계로, 대각선이동 거리 연산은 올림하여 연산하였음.     
- always @(*) begin
+ always @(posedge clk or posedge rst) begin
     if(rst | (turn_st==2) ) begin sx_sav_othf<= 0;end
     else if (calcangle) begin
         case(collimux)
         7: sx_sav_othf <= sy_sav_oth;
         6: sx_sav_othf <= 0;
         5: sx_sav_othf <= sy_sav_oth;
+        4: sx_sav_othf <= 0;
+        3: sx_sav_othf <= 0;
         2: sx_sav_othf <= sy_sav_oth;
         1: sx_sav_othf <= 0;
         0: sx_sav_othf <= sy_sav_oth;
@@ -468,13 +532,15 @@ always @(*) begin
     else begin end
       end
 
- always @(*) begin
+ always @(posedge clk or posedge rst) begin
     if(rst | (turn_st==2) ) begin sy_sav_othf<= 0;end
     else if (calcangle) begin
         case(collimux)
         7: sy_sav_othf <= sy_sav_oth;
         6: sy_sav_othf <= sy_sav_oth;
         5: sy_sav_othf <= sy_sav_oth;
+        4: sy_sav_othf <= 0;
+        3: sy_sav_othf <= 0;
         2: sy_sav_othf <= sy_sav_oth;
         1: sy_sav_othf <= sy_sav_oth;
         0: sy_sav_othf <= sy_sav_oth;
@@ -489,8 +555,8 @@ always @(*) begin
 // Auto deceleration by time //
 //////////////////////////////
 
-reg [31:0] so,so1,so2,so3;
-wire speeddown,speeddown1,speeddown2,sec1;
+reg [31:0] so,so1,so2,so3,so4;
+wire speeddown,speeddown1,speeddown2,sec1,fin;
 
 //속력에 따른 감속 차등을 위해 3개의 카운터 펄스발생 사용.
 always @ (posedge clk or posedge rst) begin
@@ -512,7 +578,7 @@ end
 assign speeddown1 = (so1==15103800-1)?1'b1 : 1'b0;  // 0.6sec
 
 always @ (posedge clk or posedge rst) begin
-if(rst || (shoot==1) || (meetballs==1) || (mv_stop==1)) so2<=0;
+if(rst || (shoot==1) || (meetballs==1) || (mv_stop==1) || (broomfront)) so2<=0;
 else
     if (so2==22678378-1) so2<=0;
     else so2<=so2+1;
@@ -529,12 +595,41 @@ else if(turn_st==0)
 end
 assign sec1 = (so3==25173000-1)?1'b1 : 1'b0;  // 1sec
 
+
+// 턴 종료시 방향 및 속력 정해지면 3초뒤 자동 턴 종료 
+always @ (posedge clk or posedge rst) begin
+if(rst || (turn_st==2) || (fincheck==1) ) so4<=0;
+else if(turn_st==0)
+    if (so4==75519000-1) so4<=0;
+    else so4<=so4+1;
+end
+assign fin = (so4==75519000-1)?1'b1 : 1'b0;  // 3sec
+
 reg shootchk,shoot;
 
 always @ (posedge clk or posedge rst) begin
 if(rst | (turn_st==2)) begin shootchk<=0; shoot<=0; end
 else if((turn_st==0)&&(shootchk==0)&&(sec1)) begin shootchk<=1;  shoot<=1; end
 else shoot<=0;
+end
+
+//자동 턴 종료 감지. 동작방식은 이 ball의 이동이 완전히 멈추는 것을 감지하여 타이머 동작.
+reg [9:0] ball_x_pre, ball_y_pre;
+reg [2:0] fincheck, fincheck_n;
+
+always @ (posedge clk or posedge rst) begin
+if(rst  || (turn_st==2) ) begin fincheck_n<=0; ball_x_pre<=0; ball_y_pre<=0; end
+else case(fincheck)
+0: if(sec1) fincheck_n<=1; else fincheck_n<=0;
+1: if((ball_x_pre==ball_x)&&(ball_y_pre==ball_y)&&(mv_stop==0)) fincheck_n<=2; else if((ball_x_pre!=ball_x)&&(ball_y_pre!=ball_y)&&(mv_stop==0)) begin ball_x_pre<=ball_x; ball_y_pre<=ball_y; fincheck_n<=1; end
+2: if(fin) fincheck_n<=0; else fincheck_n<=2;
+default: fincheck_n<=0;
+endcase
+end
+
+always @ (posedge clk or posedge rst) begin
+if(rst || (turn_st==2) ) fincheck<=0;
+else fincheck<=fincheck_n;
 end
 
 
@@ -550,6 +645,7 @@ else if(turn_st==5) sx <= 0;
 else if(turn_st==6) sx <= 0;
 else if((copy_s)&&(turn_st==3)) begin sx<=sx_sav_othf; end
 else if((copy_s)&&(turn_st==0)) begin sx<=sx_sav_mef; end
+else if((turn_st==0)&&(broomside)&&(sx<1)&&(sy!=0)) begin sx<=sx+1; end
 else if((mv_stop==0)&&(sx==1)&&(speeddown2)&&(broomside==0)&&((turn_st==0)||(turn_st==3))) sx <= sx-1; 
 else if((mv_stop==0)&&(sx>1)&&(sx<4)&&(speeddown1)&&(broomside==0)&&((turn_st==0)||(turn_st==3))) sx <= sx-1; 
 else if((mv_stop==0)&&(sx>3)&&(speeddown)&&(broomside==0)&&((turn_st==0)||(turn_st==3))) sx <= sx-1; 
@@ -632,22 +728,20 @@ reg [1:0] broomfrontx, broomsidex;
 
 always @(posedge clk or posedge rst) begin
 if(rst| (turn_st==2) ) begin broomfrontcnt<=0; broomfrontx<=0; end 
-else if((turn_st==0)&&(key_pulse==5'h1B)&&(broomdisable==0)&&(broomfrontx<5))
-        if (broomfrontcnt==3) begin broomfrontcnt<=0; broomfrontx<=broomfrontx+1; end
-         else broomfrontcnt<=broomfrontcnt+1;
+else if((turn_st==0)&&(key_pulse==5'h1B)&&(broomdisable==0)&&(broomfrontx<9)) broomfrontx<=broomfrontx+1;
+     else begin end;
 end
 
 
-assign broomfront = (broomfrontcnt==3)? 1: 0;
+assign broomfront = ((turn_st==0)&&(key_pulse==5'h1B)&&(broomdisable==0)&&(broomfrontx<9))? 1: 0;
 
 always @(posedge clk or posedge rst) begin
 if(rst| (turn_st==2) ) begin broomsidecnt<=0; broomsidex<=0; end 
-else if((turn_st==0)&&(key_pulse==5'h1A)&&(broomdisable==0)&&(broomsidex<6))
-        if(broomsidecnt==3) begin broomsidecnt<=0; broomsidex<=broomsidex+1; end
-         else broomsidecnt<=broomsidecnt+1;
+else if((turn_st==0)&&(key_pulse==5'h1A)&&(broomdisable==0)&&(broomsidex<2)) broomsidex<=broomsidex+1;
+         else begin end
 end
 
-assign broomside = (broomsidecnt==3)? 1: 0;
+assign broomside = ((turn_st==0)&&(key_pulse==5'h1A)&&(broomdisable==0)&&(broomsidex<2))? 1: 0;
 
 ////////////////////////
 /// draw ball shape ///
@@ -660,5 +754,6 @@ assign distance = (((ball_x-x)*(ball_x-x)) + ((ball_y-y)*(ball_y-y)));
 assign ball_on = ((BALL_RAD-5)*(BALL_RAD-5) >= distance)? 1 : 0;
 assign ball_edge = (BALL_RAD*BALL_RAD >= distance)? 1 : 0;
 assign hand_on = ((x > ball_x-4) && (x < ball_x+4) && (y > ball_y-5) && (y < ball_y+10))? 1: 0;
+assign real_edge = ((BALL_RAD+1)*(BALL_RAD+1) >= distance)? 1 : 0;
 
 endmodule

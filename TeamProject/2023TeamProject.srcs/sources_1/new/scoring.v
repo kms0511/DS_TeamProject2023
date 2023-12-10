@@ -16,9 +16,10 @@ input signed [10:0] ball_x_b3, ball_y_b3,
 input signed [10:0] ball_r,
 
 input [3:0] gamestate_in,
-output reg [3:0] score_red, score_blue
+output reg [3:0] score_red, score_blue,
+output scoring_end
 );
-parameter GAMESTANBY=0, GAMEREADY=1, GAME0ST=2, GAME1ST=3, GAME2ST=4, GAME3ST=5, GAME4ST=6, GAME5ST=7, GAMEEND=8;
+parameter GAMESTANBY=0, GAMEREADY=1, GAME0ST=2, GAME1ST=3, GAME2ST=4, GAME3ST=5, GAME4ST=6, GAME5ST=7, SCORINGSTART=8, SCORING=9, GAMEEND=10;
 // ball - target distance
 
 reg [3:0] score_a, score_b;
@@ -38,7 +39,7 @@ reg [4:0] c_state, n_state;
 wire calc_trigger;
 //, calc_end;
 //reg calc_end_2;
-assign calc_trigger = (gamestate_in == GAMEEND) ? 1 : 0;
+assign calc_trigger = (gamestate_in == SCORINGSTART) ? 1 : 0;
 reg [2:0] max_count;
 reg [2:0] order [0:5];
 
@@ -47,13 +48,21 @@ parameter     WAIT=5'd0,  ORDERSTART=5'd1, ORDER0=5'd2,  ORDER1=5'd3,  ORDER2=5'
             MAX0 = 5'd8,  MAX1 = 5'd9,  MAX2 = 5'd10, MAX3 = 5'd11, 
             MAX4 = 5'd12, MAX5 = 5'd13, MAXEND = 5'd14,
             SCOREA0=5'd15,SCOREA1=5'd16,SCOREA2=5'd17,
-            SCOREB0=5'd18,SCOREB1=5'd19,SCOREB2=5'd20,SCOREEND=5'd21;
+            SCOREB0=5'd18,SCOREB1=5'd19,SCOREB2=5'd20,
+            SCOREEND=5'd21, SCOREEND2=5'd22, SCORINGEND=5'd23;
 
 always @(posedge clk, posedge rst) begin
     if(rst) c_state <= WAIT;
     else    c_state <= n_state;
 end
 
+assign scoring_end = (c_state == SCORINGEND) ? 1 : 0;
+// always @(*) begin
+//     case (c_state)
+//         SCOREEND:begin scoring_end=1; end
+//         default: begin scoring_end=0; end
+//     endcase
+// end
 always @(*) begin
     case (c_state)
         WAIT:    begin if(calc_trigger) n_state=ORDERSTART; else n_state=WAIT; end
@@ -79,13 +88,15 @@ always @(*) begin
         SCOREB0: begin if(order[0]%2==1 && max_count>=0) n_state=SCOREB1; else n_state=SCOREEND;end
         SCOREB1: begin if(order[1]%2==1 && max_count>=1) n_state=SCOREB2; else n_state=SCOREEND;end
         SCOREB2: begin if(order[2]%2==1 && max_count>=2) n_state=SCOREEND;else n_state=SCOREEND;end
-        SCOREEND:begin n_state=WAIT; end
+        SCOREEND:begin n_state=SCOREEND2; end
+        SCOREEND2:begin n_state=SCORINGEND; end
+        SCORINGEND:begin n_state=WAIT; end
 
         default: begin n_state=WAIT; end
     endcase
 end
 
-//wait 일 때 <=로 초기화 해야 함
+//wait ?? ?? <=?? ???? ??? ??
 //---ORDER---ORDER---ORDER---ORDER---ORDER---ORDER---ORDER---ORDER---ORDER---ORDER---ORDER---
 ranker ranker_inst(.clk(clk), .rst(rst), .start_pulse(calc_trigger), .c_state(c_state),
     .a(d_a1), .b(d_a2), .c(d_a3), .d(d_b1), .e(d_b2), .f(d_b3), 
@@ -94,117 +105,45 @@ ranker ranker_inst(.clk(clk), .rst(rst), .start_pulse(calc_trigger), .c_state(c_
 
 
 //---MAX---MAX---MAX---MAX---MAX---MAX---MAX---MAX---MAX---MAX---MAX---MAX---MAX---MAX---MAX---MAX---
-always @(*) begin
-    case (c_state)
-        WAIT:    begin end
-        ORDER0:  begin max_count = 0; end
-        ORDER1:  begin max_count = 0; end
-        ORDER2:  begin max_count = 0; end
-        ORDER3:  begin max_count = 0; end
-        ORDER4:  begin max_count = 0; end
-        ORDEREND:begin max_count = 0; end
+always @(posedge clk, posedge rst) begin
+    if(rst) begin
+        max_count<=0;
+    end
+    else begin
+        case (c_state)
+            // WAIT:    begin end
+            // ORDER0:  begin end
+            // ORDER1:  begin end
+            // ORDER2:  begin end
+            // ORDER3:  begin end
+            // ORDER4:  begin end
+            ORDEREND:begin max_count <= 0; end
 
-        MAX0:    begin if((target_r + ball_r) * (target_r + ball_r) > d_a1) max_count = max_count + 1; end
-        MAX1:    begin if((target_r + ball_r) * (target_r + ball_r) > d_a2) max_count = max_count + 1; end
-        MAX2:    begin if((target_r + ball_r) * (target_r + ball_r) > d_a3) max_count = max_count + 1; end
-        MAX3:    begin if((target_r + ball_r) * (target_r + ball_r) > d_b1) max_count = max_count + 1; end
-        MAX4:    begin if((target_r + ball_r) * (target_r + ball_r) > d_b2) max_count = max_count + 1; end
-        MAX5:    begin if((target_r + ball_r) * (target_r + ball_r) > d_b3) max_count = max_count + 1; end
-        MAXEND:  begin end
+            MAX0:    begin if((target_r + ball_r) * (target_r + ball_r) > d_a1) max_count <= max_count + 1; end
+            MAX1:    begin if((target_r + ball_r) * (target_r + ball_r) > d_a2) max_count <= max_count + 1; end
+            MAX2:    begin if((target_r + ball_r) * (target_r + ball_r) > d_a3) max_count <= max_count + 1; end
+            MAX3:    begin if((target_r + ball_r) * (target_r + ball_r) > d_b1) max_count <= max_count + 1; end
+            MAX4:    begin if((target_r + ball_r) * (target_r + ball_r) > d_b2) max_count <= max_count + 1; end
+            MAX5:    begin if((target_r + ball_r) * (target_r + ball_r) > d_b3) max_count <= max_count + 1; end
+            // MAXEND:  begin end
 
-        SCOREA0: begin end
-        SCOREA1: begin end
-        SCOREA2: begin end
-        SCOREB0: begin end
-        SCOREB1: begin end
-        SCOREB2: begin end
-        SCOREEND:begin end
+            // SCOREA0: begin end
+            // SCOREA1: begin end
+            // SCOREA2: begin end
+            // SCOREB0: begin end
+            // SCOREB1: begin end
+            // SCOREB2: begin end
+            // SCOREEND:begin end
+            // SCOREEND2:begin end
+            // SCORINGEND:begin end
 
-        default: begin max_count = 0; end
-    endcase
+            // default: begin end
+        endcase
+    end
 end 
 
 //---ORDER---ORDER---ORDER---ORDER---ORDER---ORDER---ORDER---ORDER---ORDER---ORDER---ORDER---ORDER---ORDER---
-always @(*) begin
-    case (c_state)
-        WAIT:    begin end
-        ORDER0:  begin end
-        ORDER1:  begin end
-        ORDER2:  begin end
-        ORDER3:  begin end
-        ORDER4:  begin end
-
-        ORDEREND:begin end
-        MAX0:begin 
-            case(order_end_a1)
-            0: order[0]=0;
-            1: order[1]=0;
-            2: order[2]=0;
-            3: order[3]=0;
-            4: order[4]=0;
-            5: order[5]=0;
-            endcase
-        end
-        MAX1:    begin 
-            case(order_end_a2)
-            0: order[0]=2;
-            1: order[1]=2;
-            2: order[2]=2;
-            3: order[3]=2;
-            4: order[4]=2;
-            5: order[5]=2;
-            endcase end
-        MAX2:    begin 
-            case(order_end_a3)
-            0: order[0]=4;
-            1: order[1]=4;
-            2: order[2]=4;
-            3: order[3]=4;
-            4: order[4]=4;
-            5: order[5]=4;
-            endcase end
-        MAX3:    begin 
-            case(order_end_b1)
-            0: order[0]=1;
-            1: order[1]=1;
-            2: order[2]=1;
-            3: order[3]=1;
-            4: order[4]=1;
-            5: order[5]=1;
-            endcase end
-        MAX4:    begin 
-            case(order_end_b2)
-            0: order[0]=3;
-            1: order[1]=3;
-            2: order[2]=3;
-            3: order[3]=3;
-            4: order[4]=3;
-            5: order[5]=3;
-            endcase end
-        MAX5:    begin 
-            case(order_end_b3)
-            0: order[0]=5;
-            1: order[1]=5;
-            2: order[2]=5;
-            3: order[3]=5;
-            4: order[4]=5;
-            5: order[5]=5;
-            endcase end
-        MAXEND:  begin end
-
-        SCOREA0: begin end
-        SCOREA1: begin end
-        SCOREA2: begin end
-        SCOREB0: begin end
-        SCOREB1: begin end
-        SCOREB2: begin end
-        SCOREEND:begin end
-
-        default: begin end
-    endcase
-end 
-
-always @(posedge clk, posedge rst) begin//gong   sun seo dae ro   gong bern ho rel   nut neun da
+always @(posedge clk, posedge rst) begin
     if(rst) begin
         order[0]<=0;
         order[1]<=0;
@@ -212,109 +151,129 @@ always @(posedge clk, posedge rst) begin//gong   sun seo dae ro   gong bern ho r
         order[3]<=0;
         order[4]<=0;
         order[5]<=0;
-        max_count<=0;
     end
-end
+    else begin
+        case (c_state)
+            WAIT:    begin end
+            ORDER0:  begin end
+            ORDER1:  begin end
+            ORDER2:  begin end
+            ORDER3:  begin end
+            ORDER4:  begin end
+
+            ORDEREND:begin end
+            MAX0:begin 
+                case(order_end_a1)
+                0: order[0]<=0;
+                1: order[1]<=0;
+                2: order[2]<=0;
+                3: order[3]<=0;
+                4: order[4]<=0;
+                5: order[5]<=0;
+                endcase
+            end
+            MAX1:    begin 
+                case(order_end_a2)
+                0: order[0]<=2;
+                1: order[1]<=2;
+                2: order[2]<=2;
+                3: order[3]<=2;
+                4: order[4]<=2;
+                5: order[5]<=2;
+                endcase end
+            MAX2:    begin 
+                case(order_end_a3)
+                0: order[0]<=4;
+                1: order[1]<=4;
+                2: order[2]<=4;
+                3: order[3]<=4;
+                4: order[4]<=4;
+                5: order[5]<=4;
+                endcase end
+            MAX3:    begin 
+                case(order_end_b1)
+                0: order[0]<=1;
+                1: order[1]<=1;
+                2: order[2]<=1;
+                3: order[3]<=1;
+                4: order[4]<=1;
+                5: order[5]<=1;
+                endcase end
+            MAX4:    begin 
+                case(order_end_b2)
+                0: order[0]<=3;
+                1: order[1]<=3;
+                2: order[2]<=3;
+                3: order[3]<=3;
+                4: order[4]<=3;
+                5: order[5]<=3;
+                endcase end
+            MAX5:    begin 
+                case(order_end_b3)
+                0: order[0]<=5;
+                1: order[1]<=5;
+                2: order[2]<=5;
+                3: order[3]<=5;
+                4: order[4]<=5;
+                5: order[5]<=5;
+                endcase end
+            // MAXEND:  begin end
+
+            // SCOREA0: begin end
+            // SCOREA1: begin end
+            // SCOREA2: begin end
+            // SCOREB0: begin end
+            // SCOREB1: begin end
+            // SCOREB2: begin end
+            // SCOREEND:begin end
+            // SCOREEND2:begin end
+            // SCORINGEND:begin end
+
+            // default: begin end
+        endcase
+    end
+end 
+
+// always @(posedge clk, posedge rst) begin//gong   sun seo dae ro   gong bern ho rel   nut neun da
+
+// end
 
 //---SCORE---SCORE---SCORE---SCORE---SCORE---SCORE---SCORE---SCORE---SCORE---SCORE---SCORE---SCORE---
 always @(posedge clk, posedge rst) begin
     if(rst) begin
-        score_a <= 0;
-        score_b <= 0;
         score_red <= 0;
         score_blue <= 0;
     end
-    else if(c_state == SCOREEND)begin
+    else if(c_state == SCOREEND) begin
         score_red <= score_a;
         score_blue <= score_b;
     end
 end
 
-always @(*) begin
-    case (c_state)
-        SCOREA0: begin if(order[0]%2==0 && max_count>0) score_a = score_a + 1; end
-        SCOREA1: begin if(order[1]%2==0 && max_count>1) score_a = score_a + 1; end
-        SCOREA2: begin if(order[2]%2==0 && max_count>2) score_a = score_a + 1; end
+always @(posedge clk, posedge rst) begin
+    if(rst) begin
+        score_a <= 0;
+        score_b <= 0;
+    end
+    else begin
+        case (c_state)
+            //WAIT:begin  end
+            //MAX5:    begin score_a <= 0; score_b <= 0; end
+            MAXEND:  begin score_a <= 0; score_b <= 0; end
+            SCOREA0: begin if(order[0]%2==0 && max_count>0) score_a <= score_a + 1; end
+            SCOREA1: begin if(order[1]%2==0 && max_count>1) score_a <= score_a + 1; end
+            SCOREA2: begin if(order[2]%2==0 && max_count>2) score_a <= score_a + 1; end
 
-        SCOREB0: begin if(order[0]%2==1 && max_count>0) score_b = score_b + 1; end
-        SCOREB1: begin if(order[1]%2==1 && max_count>1) score_b = score_b + 1; end
-        SCOREB2: begin if(order[2]%2==1 && max_count>2) score_b = score_b + 1; end
+            SCOREB0: begin if(order[0]%2==1 && max_count>0) score_b <= score_b + 1; end
+            SCOREB1: begin if(order[1]%2==1 && max_count>1) score_b <= score_b + 1; end
+            SCOREB2: begin if(order[2]%2==1 && max_count>2) score_b <= score_b + 1; end
 
-        SCOREEND:begin end
-        default:begin end
-    endcase
+            // SCOREEND:begin end
+            // SCOREEND2:begin end
+            // SCORINGEND:begin end
+            default:begin end
+        endcase
+    end
 end
 
-// always @* begin
-//     if(calc_end) begin
-//         if(order[0]%2==0 && max_count>=0) begin
-//             score_a = score_a + 1;
-//             if(order[1]%2==0 && max_count>=1) begin
-//                 score_a = score_a + 1;
-//                 if(order[2]%2==0 && max_count>=2) begin
-//                     score_a = score_a + 1;
-//                 end
-//             end
-//         end
-//         if(order[0]%2==1 && max_count>=0) begin
-//             score_b = score_b + 1;
-//             if(order[1]%2==1 && max_count>=1) begin
-//                 score_b = score_b + 1;
-//                 if(order[2]%2==1 && max_count>=2) begin
-//                     score_b = score_b + 1;
-//                 end
-//             end
-//         end
-//     end
-// end
-/*
-always @* begin
-    if      (d_a1 < d_a2 && d_a1 < d_a3 && d_a1 < d_b1 && d_a1 < d_b2 && d_a1 < d_b3) order_a1 = 1;
-    else if (d_a2 < d_a3 && d_a2 < d_b1 && d_a2 < d_b2 && d_a2 < d_b3) order_a1 = 2;
-    else if (d_a3 < d_b1 && d_a3 < d_b2 && d_a3 < d_b3) order_a1 = 3;
-    else if (d_b1 < d_b2 && d_b1 < d_b3) order_a1 = 4;
-    else if (d_b2 < d_b3) order_a1 = 5;
-    else order_a1 = 6;
-end
-always @* begin
-    if      (d_a2 < d_a1 && d_a2 < d_a3 && d_a2 < d_b1 && d_a2 < d_b2 && d_a2 < d_b3) order_a2 = 1;
-    else if (d_a1 < d_a3 && d_a1 < d_b1 && d_a1 < d_b2 && d_a1 < d_b3) order_a2 = 2;
-    else if (d_a3 < d_b1 && d_a3 < d_b2 && d_a3 < d_b3) order_a2 = 3;
-    else if (d_b1 < d_b2 && d_b1 < d_b3) order_a2 = 4;
-    else if (d_b2 < d_b3) order_a2 = 5;
-    else order_a2 = 6;
-end
-always @* begin
-    if      (d_a3 < d_a1 && d_a3 < d_a2 && d_a3 < d_b1 && d_a3 < d_b2 && d_a3 < d_b3) order_a3 = 1;
-    else if (d_a1 < d_a2 && d_a1 < d_b1 && d_a1 < d_b2 && d_a1 < d_b3) order_a3 = 2;
-    else if (d_a2 < d_b1 && d_a2 < d_b2 && d_a2 < d_b3) order_a3 = 3;
-    else if (d_b1 < d_b2 && d_b1 < d_b3) order_a3 = 4;
-    else if (d_b2 < d_b3) order_a3 = 5;
-    else order_a3 = 6;
-end
-always @* begin
-    if      (d_b1 < d_a1 && d_b1 < d_a2 && d_b1 < d_a3 && d_b1 < d_b2 && d_b1 < d_b3) order_b1 = 1;
-    else if (d_a1 < d_a2 && d_a1 < d_a3 && d_a1 < d_b2 && d_a1 < d_b3) order_b1 = 2;
-    else if (d_a2 < d_a3 && d_a2 < d_b2 && d_a2 < d_b3) order_b1 = 3;
-    else if (d_a3 < d_b2 && d_a3 < d_b3) order_b1 = 4;
-    else if (d_b2 < d_b3) order_b1 = 5;
-    else order_b1 = 6;
-end
-always @* begin
-    if      (d_b2 < d_a1 && d_b2 < d_a2 && d_b2 < d_a3 && d_b2 < d_b1 && d_b2 < d_b3) order_b2 = 1;
-    else if (d_a1 < d_a2 && d_a1 < d_a3 && d_a1 < d_b1 && d_a1 < d_b3) order_b2 = 2;
-    else if (d_a2 < d_a3 && d_a2 < d_b1 && d_a2 < d_b3) order_b2 = 3;
-    else if (d_a3 < d_b1 && d_a3 < d_b3) order_b2 = 4;
-    else if (d_b1 < d_b3) order_b2 = 5;
-    else order_b2 = 6;
-end
-always @* begin
-    if      (d_b3 < d_a1 && d_b3 < d_a2 && d_b3 < d_a3 && d_b3 < d_b1 && d_b3 < d_b2) order_b3 = 1;
-    else if (d_a1 < d_a2 && d_a1 < d_a3 && d_a1 < d_b1 && d_a1 < d_b2) order_b3 = 2;
-    else if (d_a2 < d_a3 && d_a2 < d_b1 && d_a2 < d_b2) order_b3 = 3;
-    else if (d_a3 < d_b1 && d_a3 < d_b2) order_b3 = 4;
-    else if (d_b1 < d_b2) order_b3 = 5;
-    else order_b3 = 6;
-end
-*/
 endmodule
