@@ -5,35 +5,35 @@ input clk, rst,
 
 input signed [10:0] target_x, target_y, target_r, 
 
-input signed [10:0] ball_x_a1, ball_y_a1,
-input signed [10:0] ball_x_a2, ball_y_a2,
-input signed [10:0] ball_x_a3, ball_y_a3,
+input signed [10:0] stone_x_a1, stone_y_a1,
+input signed [10:0] stone_x_a2, stone_y_a2,
+input signed [10:0] stone_x_a3, stone_y_a3,
 
-input signed [10:0] ball_x_b1, ball_y_b1,
-input signed [10:0] ball_x_b2, ball_y_b2,
-input signed [10:0] ball_x_b3, ball_y_b3,
+input signed [10:0] stone_x_b1, stone_y_b1,
+input signed [10:0] stone_x_b2, stone_y_b2,
+input signed [10:0] stone_x_b3, stone_y_b3,
 
-input signed [10:0] ball_r,
+input signed [10:0] stone_r,
 
 input [3:0] gamestate_in,
 output reg [3:0] score_red, score_blue,
 output scoring_end
 );
 parameter GAMESTANBY=0, GAMEREADY=1, GAME0ST=2, GAME1ST=3, GAME2ST=4, GAME3ST=5, GAME4ST=6, GAME5ST=7, SCORINGSTART=8, SCORING=9, GAMEEND=10;
-// ball - target distance
+// stone - target distance
 
 reg [3:0] score_a, score_b;
 wire [21:0] d_a1, d_a2, d_a3, d_b1, d_b2, d_b3; //d=distance
 wire [2:0] order_end_a1, order_end_a2, order_end_a3, order_end_b1, order_end_b2, order_end_b3;
-// ball - target distance calculate
+// stone - target distance calculate
 // all distance is (dist)^2 ed
-distance_t distance_t_a1(.target_x(target_x), .target_y(target_y), .ball_x(ball_x_a1), .ball_y(ball_y_a1), .distance_sq(d_a1));
-distance_t distance_t_a2(.target_x(target_x), .target_y(target_y), .ball_x(ball_x_a2), .ball_y(ball_y_a2), .distance_sq(d_a2));
-distance_t distance_t_a3(.target_x(target_x), .target_y(target_y), .ball_x(ball_x_a3), .ball_y(ball_y_a3), .distance_sq(d_a3));
+distance_t distance_t_a1(.target_x(target_x), .target_y(target_y), .stone_x(stone_x_a1), .stone_y(stone_y_a1), .distance_sq(d_a1));
+distance_t distance_t_a2(.target_x(target_x), .target_y(target_y), .stone_x(stone_x_a2), .stone_y(stone_y_a2), .distance_sq(d_a2));
+distance_t distance_t_a3(.target_x(target_x), .target_y(target_y), .stone_x(stone_x_a3), .stone_y(stone_y_a3), .distance_sq(d_a3));
 
-distance_t distance_t_b1(.target_x(target_x), .target_y(target_y), .ball_x(ball_x_b1), .ball_y(ball_y_b1), .distance_sq(d_b1));
-distance_t distance_t_b2(.target_x(target_x), .target_y(target_y), .ball_x(ball_x_b2), .ball_y(ball_y_b2), .distance_sq(d_b2));
-distance_t distance_t_b3(.target_x(target_x), .target_y(target_y), .ball_x(ball_x_b3), .ball_y(ball_y_b3), .distance_sq(d_b3));
+distance_t distance_t_b1(.target_x(target_x), .target_y(target_y), .stone_x(stone_x_b1), .stone_y(stone_y_b1), .distance_sq(d_b1));
+distance_t distance_t_b2(.target_x(target_x), .target_y(target_y), .stone_x(stone_x_b2), .stone_y(stone_y_b2), .distance_sq(d_b2));
+distance_t distance_t_b3(.target_x(target_x), .target_y(target_y), .stone_x(stone_x_b3), .stone_y(stone_y_b3), .distance_sq(d_b3));
 
 reg [4:0] c_state, n_state;
 wire calc_trigger;
@@ -119,12 +119,12 @@ always @(posedge clk, posedge rst) begin
             // ORDER4:  begin end
             ORDEREND:begin max_count <= 0; end
 
-            MAX0:    begin if((target_r + ball_r) * (target_r + ball_r) > d_a1) max_count <= max_count + 1; end
-            MAX1:    begin if((target_r + ball_r) * (target_r + ball_r) > d_a2) max_count <= max_count + 1; end
-            MAX2:    begin if((target_r + ball_r) * (target_r + ball_r) > d_a3) max_count <= max_count + 1; end
-            MAX3:    begin if((target_r + ball_r) * (target_r + ball_r) > d_b1) max_count <= max_count + 1; end
-            MAX4:    begin if((target_r + ball_r) * (target_r + ball_r) > d_b2) max_count <= max_count + 1; end
-            MAX5:    begin if((target_r + ball_r) * (target_r + ball_r) > d_b3) max_count <= max_count + 1; end
+            MAX0:    begin if((target_r + stone_r) * (target_r + stone_r) > d_a1) max_count <= max_count + 1; end
+            MAX1:    begin if((target_r + stone_r) * (target_r + stone_r) > d_a2) max_count <= max_count + 1; end
+            MAX2:    begin if((target_r + stone_r) * (target_r + stone_r) > d_a3) max_count <= max_count + 1; end
+            MAX3:    begin if((target_r + stone_r) * (target_r + stone_r) > d_b1) max_count <= max_count + 1; end
+            MAX4:    begin if((target_r + stone_r) * (target_r + stone_r) > d_b2) max_count <= max_count + 1; end
+            MAX5:    begin if((target_r + stone_r) * (target_r + stone_r) > d_b3) max_count <= max_count + 1; end
             // MAXEND:  begin end
 
             // SCOREA0: begin end

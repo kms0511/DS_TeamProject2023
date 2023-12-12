@@ -73,8 +73,8 @@ parameter TARGET1_COLOR = {RGB_WHITE};
 parameter TARGET2_COLOR = {RGB_JAHONG};
 parameter TARGET3_COLOR = {RGB_WHITE};
 
-//ball
-parameter BALL_R = 15;
+//stone
+parameter STONE_R = 15;
 
 /*--------- direction move bar define -----------
 ----------- direction move bar define -----------
@@ -145,7 +145,7 @@ wire gaugeshow_on, gaugeguide_on, mvbar_on,endbox,endbox_red, endbox_blue, red_w
 
 
 
-wire reach_top, reach_bottom, reach_wall, reach_bar, miss_ball;
+wire reach_top, reach_bottom, reach_wall, reach_bar, miss_stone;
 reg game_stop, game_over;  
 
 //refrernce tick 
@@ -176,16 +176,16 @@ assign gaugebar_on[3] = (x>=GAUGEBAR3_X_L && x<=GAUGEBAR3_X_R && y>=GAUGEBAR3_Y_
 assign gaugebar_on[4] = (x>=GAUGEBAR4_X_L && x<=GAUGEBAR4_X_R && y>=GAUGEBAR4_Y_U && y<=GAUGEBAR4_Y_D)? 1 : 0; //gaugebar가 있는 영역
 assign gaugeguide_on = (x>=GAUGEGUIDE_X_L && x<=GAUGEGUIDE_X_R && y>=GAUGEGUIDE_Y_U && y<=GAUGEGUIDE_Y_D)? 1 : 0; //gaugebar guide가 있는 영역
 
-assign endbox_red = (game_set_over==1  && red_win==1 && x>=131 && x<=508 && y>=170 && y<=360)? 1 : 0; //end box    ?
-assign endbox_blue = (game_set_over==1 && blue_win==1&& x>=131 && x<=508 && y>=170 && y<=360)? 1 : 0; //end box    ?
-assign endbox_draw = (game_set_over==1 && draw_flag==1&& x>=131 && x<=508 && y>=170 && y<=360)? 1 : 0; //end box    ?
 
-assign red_winbox = (game_set_over==1 && red_win==1 && x>=180 && x<=459 && y>=70 && y<=100)? 1 : 0; //end box
-assign blue_winbox = (game_set_over==1 && blue_win==1 && x>=180 && x<=459 && y>=70 && y<=100)? 1 : 0; //end box
-assign draw_winbox = (game_set_over==1 && draw_flag==1 && x>=180 && x<=459 && y>=70 && y<=100)? 1 : 0; //end box
+reg red_end_box, blue_end_box, draw_end_box;
 
-assign select_box_keep = (selsig==1 && game_set_over==1 && gamekeep==1 && x>=141 && x<=271 && y>=255 && y<=340)? 1 : 0;
-assign select_box_reset = (selsig==1 && game_set_over==1 && gamekeep==0 && x>=338 && x<=488 && y>=255 && y<=340)? 1 : 0;
+assign endbox_red = (red_end_box ==1 && ((x>=131 && x<=508 && y>=170 && y<=360)||(x>=180 && x<=459 && y>=70 && y<=100)))? 1 : 0; //end box    ?
+assign endbox_blue = (blue_end_box ==1 && ((x>=131 && x<=508 && y>=170 && y<=360)||(x>=180 && x<=459 && y>=70 && y<=100)))? 1 : 0; //end box    ?
+assign endbox_draw = (draw_end_box ==1 && ((x>=131 && x<=508 && y>=170 && y<=360)||(x>=180 && x<=459 && y>=70 && y<=100)))? 1 : 0; //end box    ?
+
+
+assign select_box_keep = (selkeep==1 && gamestate>SCORING2 && x>=141 && x<=271 && y>=255 && y<=340)? 1 : 0;
+assign select_box_reset = (selrst==1 && gamestate>SCORING2 && x>=338 && x<=488 && y>=255 && y<=340)? 1 : 0;
 
 
 
@@ -201,15 +201,15 @@ scoring scoring_inst(
     .clk(clk), .rst(rst),
 
     .target_x(TARGET_X_C), .target_y(TARGET_Y_C), .target_r(TARGET_R), 
-    .ball_x_a1(ball_x[0]), .ball_y_a1(ball_y[0]),
-    .ball_x_a2(ball_x[2]), .ball_y_a2(ball_y[2]),
-    .ball_x_a3(ball_x[4]), .ball_y_a3(ball_y[4]),
+    .stone_x_a1(stone_x[0]), .stone_y_a1(stone_y[0]),
+    .stone_x_a2(stone_x[2]), .stone_y_a2(stone_y[2]),
+    .stone_x_a3(stone_x[4]), .stone_y_a3(stone_y[4]),
 
-    .ball_x_b1(ball_x[1]), .ball_y_b1(ball_y[1]),
-    .ball_x_b2(ball_x[3]), .ball_y_b2(ball_y[3]),
-    .ball_x_b3(ball_x[5]), .ball_y_b3(ball_y[5]),
+    .stone_x_b1(stone_x[1]), .stone_y_b1(stone_y[1]),
+    .stone_x_b2(stone_x[3]), .stone_y_b2(stone_y[3]),
+    .stone_x_b3(stone_x[5]), .stone_y_b3(stone_y[5]),
 
-    .ball_r(BALL_R),
+    .stone_r(STONE_R),
     
     .gamestate_in(gamestate),
 
@@ -219,8 +219,11 @@ scoring scoring_inst(
 
 
 reg [3:0] score_reds, score_blues;
+wire [1:0] whowin;
+wire resetdata;
+
 always@(posedge clk, posedge rst) begin
-    if(rst || (resetdata==1) ) begin
+    if(rst || resetdata ) begin
         score_reds <= 0;
         score_blues <= 0;
     end
@@ -229,6 +232,8 @@ always@(posedge clk, posedge rst) begin
         score_blues <= score_blueout + score_blues;
     end
 end
+
+assign whowin = (( score_reds > score_blues) && (gamestate==SCORING2)) ? 1: ((score_reds < score_blues)&& (gamestate==SCORING2))? 2: ((score_reds == score_blues)&& (gamestate==SCORING2))? 0 : 3;
 
 
 
@@ -315,7 +320,7 @@ end
 reg [9:0] keep_x_l, keep_y_t;
 // assign keep_x_l = 150; 
 // assign keep_y_t = 300; 
-assign keep_on = (game_set_over==1 && y>=keep_y_t && y<keep_y_t+32 && x>=keep_x_l && x<keep_x_l+16*7)? 1 : 0; 
+assign keep_on = (gamestate>SCORING2 && y>=keep_y_t && y<keep_y_t+32 && x>=keep_x_l && x<keep_x_l+16*7)? 1 : 0; 
 assign row_addr_keep = (y-keep_y_t) >> 1;
 always @ (*) begin
     if (x>=keep_x_l+16*0 && x<keep_x_l+16*1) begin bit_addr_keep = (x-keep_x_l-16*0) >> 1; char_addr_keep = 7'b1001011; end      // K x4b
@@ -327,6 +332,8 @@ always @ (*) begin
     else if (x>=keep_x_l+16*6 && x<keep_x_l+16*7) begin bit_addr_keep = (x-keep_x_l-16*6) >> 1; char_addr_keep = 7'b1101110; end // n x6e
     else begin bit_addr_keep = 0; char_addr_keep = 0; end                         
 end
+
+reg move_reset, move_keep;
 
 always @(posedge clk, posedge rst) begin
     if(rst || move_keep) begin
@@ -345,7 +352,7 @@ end
 reg [9:0] reset_x_l, reset_y_t; 
 //assign reset_x_l = 350; 
 //assign reset_y_t = 300; 
-assign reset_on = (game_set_over==1 && y>=reset_y_t && y<reset_y_t+32 && x>=reset_x_l && x<reset_x_l+16*8)? 1 : 0;
+assign reset_on = (gamestate>SCORING2 && y>=reset_y_t && y<reset_y_t+32 && x>=reset_x_l && x<reset_x_l+16*8)? 1 : 0;
 assign row_addr_reset = (y-reset_y_t) >> 1;
 always @(*) begin
     if (x>=reset_x_l+16*0 && x<reset_x_l+16*1) begin bit_addr_reset = (x-reset_x_l-16*0)>>1; char_addr_reset = 7'b1010010; end      // R x52
@@ -370,7 +377,7 @@ end
 
 
 // game set select
-assign set_game_on = (game_set_over==1 && y[9:6]==3 && x[9:5]>=5 && x[9:5]<=14)? 1 : 0; // 여기에 select_game 신호 추가해서 1이면 set_game_on 
+assign set_game_on = (gamestate>SCORING2 && y[9:6]==3 && x[9:5]>=5 && x[9:5]<=14)? 1 : 0; // 여기에 select_game 신호 추가해서 1이면 set_game_on 
 assign row_addr_ng = y[5:2];
 always @(*) begin
 
@@ -391,13 +398,14 @@ always @(*) begin
     endcase
 end
 
+reg red_win, blue_win, draw_flag, selkeep, selrst;
 
 // RED_win
 wire [9:0] rw_x_l, rw_y_t;
 assign rw_x_l = 260; 
 assign rw_y_t = 70; 
 //assign RED_WIN_ON = (red_win==1 && y > rw_y_t && y<rw_y_t+32 && x>=rw_x_l && x<rw_x_l+16*7)? 1 : 0; 
-assign RED_WIN_ON = (red_win==1 && game_set_over==1 && y > rw_y_t && y<rw_y_t+32 && x>=rw_x_l && x<rw_x_l+16*7)? 1 : 0; 
+assign RED_WIN_ON = (red_win==1 &&  y > rw_y_t && y<rw_y_t+32 && x>=rw_x_l && x<rw_x_l+16*7)? 1 : 0; 
 assign row_addr_rw = (y-rw_y_t) >> 1;
 always @ (*) begin
     if (x>=rw_x_l+16*0 && x<rw_x_l+16*1) begin bit_addr_rw = (x-rw_x_l-16*0) >> 1; char_addr_rw = 7'b1010010; end      // R x52
@@ -414,7 +422,7 @@ end
 wire [9:0] bw_x_l, bw_y_t; 
 assign bw_x_l = 255; 
 assign bw_y_t = 70; 
-assign BLUE_WIN_ON = (blue_win==1 && game_set_over==1 && y>=bw_y_t && y<bw_y_t+32 && x>=bw_x_l && x<bw_x_l+16*8)? 1 : 0;
+assign BLUE_WIN_ON = (blue_win==1 && y>=bw_y_t && y<bw_y_t+32 && x>=bw_x_l && x<bw_x_l+16*8)? 1 : 0;
 assign row_addr_bw = (y-bw_y_t) >> 1;
 always @(*) begin
     if (x>=bw_x_l+16*0 && x<bw_x_l+16*1) begin bit_addr_bw = (x-bw_x_l-16*0)>>1; char_addr_bw = 7'b1000010; end      // B x42
@@ -432,7 +440,7 @@ end
 wire [9:0] dw_x_l, dw_y_t; 
 assign dw_x_l = 255; 
 assign dw_y_t = 70; 
-assign DRAW_FLAG_ON = (draw_flag==1 && game_set_over==1 && y>=dw_y_t && y<dw_y_t+32 && x>=dw_x_l && x<dw_x_l+16*8)? 1 : 0;
+assign DRAW_FLAG_ON = (draw_flag==1 && y>=dw_y_t && y<dw_y_t+32 && x>=dw_x_l && x<dw_x_l+16*8)? 1 : 0;
 assign row_addr_dw = (y-dw_y_t) >> 1;
 always @(*) begin
     if (x>=dw_x_l+16*2 && x<dw_x_l+16*3) begin bit_addr_dw = (x-dw_x_l-16*2)>>1; char_addr_dw = 7'b1000100; end // D
@@ -451,20 +459,21 @@ assign rgb = (font_bit & red_on)?        RGB_RED : //RED text_RED
              (font_bit & blue_on)?       RGB_BLUE : //blue text_BLUE
              (font_bit & red_score_on)?  RGB_RED :  // RED SCORE
              (font_bit & blue_score_on)? RGB_BLUE :  // BLUE SCORE
-             (font_bit & keep_on)? RGB_WHITE : //blue text
-             (font_bit & reset_on)? RGB_WHITE : //blue text
-             (font_bit & RED_WIN_ON) ? RGB_WHITE:
-             (font_bit & BLUE_WIN_ON) ? RGB_WHITE:
-             (font_bit & DRAW_FLAG_ON) ? RGB_WHITE:
-             (font_bit & set_game_on)? RGB_WHITE : //blue text
+             (font_bit & keep_on)? RGB_BLACK : //blue text
+             (font_bit & reset_on)? RGB_BLACK : //blue text
+             (font_bit & RED_WIN_ON) ? RGB_BLACK:
+             (font_bit & BLUE_WIN_ON) ? RGB_BLACK:
+             (font_bit & DRAW_FLAG_ON) ? RGB_BLACK:
+             (font_bit & set_game_on)? RGB_BLACK : //blue text
              (select_box_keep)?  RGB_BLACK :
              (select_box_reset)? RGB_BLACK :
-             (endbox_draw)? RGB_PURPLE :
-             (endbox_red)? RGB_RED :
-             (endbox_blue)? RGB_BLUE :  //endbox
-             (red_winbox)? RGB_RED ://red_winbox 
-             (blue_winbox) ? RGB_BLUE :// blue_winbox
-             (draw_winbox)? RGB_PURPLE :
+            
+             (endbox_red)? RGB_ORANGE :
+             (endbox_blue)? RGB_ORANGE :
+             (endbox_draw)? RGB_ORANGE :  //endbox
+            // (red_winbox)? RGB_RED ://red_winbox 
+            // (blue_winbox) ? RGB_BLUE :// blue_winbox
+           //  (draw_winbox)? RGB_PURPLE :
 
 
              (wall_on[0])?          RGB_REDBROWN : //brown wall
@@ -478,19 +487,19 @@ assign rgb = (font_bit & red_on)?        RGB_RED : //RED text_RED
              (hand_on[4])?          RGB_REDBROWN :
              (hand_on[5])?          RGB_REDBROWN :
 
-             (ball_on[0])?          RGB_RED : //ball 0 red             
-             (ball_on[1])?          RGB_BLUE : //ball 1 blue
-             (ball_on[2])?          RGB_RED : //ball 2 red
-             (ball_on[3])?          RGB_BLUE : //ball 3 blue
-             (ball_on[4])?          RGB_RED : //ball 4 red
-             (ball_on[5])?          RGB_BLUE : //ball 5 blue
+             (stone_on[0])?          RGB_RED : //stone 0 red             
+             (stone_on[1])?          RGB_BLUE : //stone 1 blue
+             (stone_on[2])?          RGB_RED : //stone 2 red
+             (stone_on[3])?          RGB_BLUE : //stone 3 blue
+             (stone_on[4])?          RGB_RED : //stone 4 red
+             (stone_on[5])?          RGB_BLUE : //stone 5 blue
 
-             (ball_edge[0])?          RGB_GRAY : //ball 0 red             
-             (ball_edge[1])?          RGB_GRAY : //ball 1 blue
-             (ball_edge[2])?          RGB_GRAY : //ball 2 red
-             (ball_edge[3])?          RGB_GRAY : //ball 3 blue
-             (ball_edge[4])?          RGB_GRAY : //ball 4 red
-             (ball_edge[5])?          RGB_GRAY : //ball 5 blue
+             (stone_edge[0])?          RGB_GRAY : //stone 0 red             
+             (stone_edge[1])?          RGB_GRAY : //stone 1 blue
+             (stone_edge[2])?          RGB_GRAY : //stone 2 red
+             (stone_edge[3])?          RGB_GRAY : //stone 3 blue
+             (stone_edge[4])?          RGB_GRAY : //stone 4 red
+             (stone_edge[5])?          RGB_GRAY : //stone 5 blue
              
              (real_edge[0])?        RGB_BLACK:
              (real_edge[1])?        RGB_BLACK:
@@ -562,11 +571,11 @@ assign rgb = (font_bit & red_on)?        RGB_RED : //RED text_RED
                                     
                                     
                                     
-wire [9:0] ball_x [5:0];
-wire [9:0] ball_y [5:0];
+wire [9:0] stone_x [5:0];
+wire [9:0] stone_y [5:0];
 reg [2:0] turn_st[5:0]; // 0:your turn, 1: ready, 2: wait 3: turn end, 4: dir select 5: wait for powsel, 6: wair for idle
-wire ball_on[5:0];
-wire [5:0] broom_on_center,broom_on_up,broom_on_left,broom_on_right,ball_edge,hand_on, broom_on_center_design, broom_on_up_design, real_edge;
+wire stone_on[5:0];
+wire [5:0] broom_on_center,broom_on_up,broom_on_left,broom_on_right,stone_edge,hand_on, broom_on_center_design, broom_on_up_design, real_edge;
 //wire broom_ons;
 reg [3:0] sx_in[5:0];
 reg [3:0] sy_in[5:0];
@@ -581,6 +590,10 @@ wire [1:0] ydir_out[5:0];
 reg [31:0] stcnt;
 wire stsig;
  
+
+
+parameter GAMESTANBY=0, GAMEREADY=1, GAME0ST=2, GAME1ST=3, GAME2ST=4, GAME3ST=5, GAME4ST=6, GAME5ST=7, SCORINGSTART=8, SCORING=9,SCORING2=10, GAMEEND=11, WAIT=12, WAIT2=13;
+
 always @ (posedge clk or posedge rst) begin
 if(rst || (gamestate==WAIT) ) stcnt<=0;
 else if(gamestate==WAIT2)
@@ -590,42 +603,37 @@ end
 assign stsig = (stcnt==50346000-1)?1'b1 : 1'b0;  // 2sec
 
 //game auto state
-reg gamereset,gamekeep,resetdata, no_rst;
-reg move_reset, move_keep;
-reg red_win, blue_win, draw_flag, selsig;
-reg [1:0] now_turn = 2'b0;
-parameter FINALROUND=2;
+reg gamereset;
+wire no_rst;
+reg [1:0] now_turn;
 
-
-parameter GAMESTANBY=0, GAMEREADY=1, GAME0ST=2, GAME1ST=3, GAME2ST=4, GAME3ST=5, GAME4ST=6, GAME5ST=7, SCORINGSTART=8, SCORING=9, SCORING2=10,GAMEEND=11, WAIT=12, WAIT2=13;
-
+assign resetdata = (selrst==1)? 1: 0;
+assign no_rst = (now_turn==2)? 1:0;
+wire gamekeepsig;
+assign gamekeepsig = ((key ==5'h1D) && (no_rst==0))? 1:0;  //(no_rst==0) && (key_pulse==5'h1D)
 
 always @ (*) begin
 case(gamestate)
-    GAMESTANBY: if(gamekeep==1) begin gamereset=0; resetdata<=0; gamekeep<=0; move_reset<=0; move_keep<=0; game_set_over <= 0; red_win<=0; blue_win<=0; draw_flag<=0; b0_st<=0; b1_st<=0; b2_st<=0; b3_st<=0; b4_st<=0; b5_st<=0; gamenstate <=GAMEREADY;  end
-	       else begin gamereset=0; resetdata<=1; gamekeep<=0; move_reset<=0; move_keep<=0; game_set_over <= 0; red_win<=0; blue_win<=0; draw_flag<=0; b0_st<=0; b1_st<=0; b2_st<=0; b3_st<=0; b4_st<=0; b5_st<=0; gamenstate <=GAMEREADY;  end
-    GAMEREADY : if(key_pulse==5'h11) begin resetdata<=0; gamenstate<=GAME0ST; end else gamenstate <=GAMEREADY;
+    GAMESTANBY: begin red_end_box<=0; blue_end_box<=0; draw_end_box<=0; gamereset=0; move_reset<=1; move_keep<=1; game_set_over <= 0; red_win<=0; blue_win<=0; draw_flag<=0; b0_st<=0; b1_st<=0; b2_st<=0; b3_st<=0; b4_st<=0; b5_st<=0; gamenstate <=GAMEREADY;  end       
+    GAMEREADY : if(key_pulse==5'h11) begin gamenstate<=GAME0ST; end else gamenstate <=GAMEREADY;
     GAME0ST : if(turn_st[0]==3) begin b0_st<=0; gamenstate<=GAME1ST; end else begin b0_st<=1; b1_st<=0; b2_st<=0; b3_st<=0; b4_st<=0; b5_st<=0; gamenstate<=GAME0ST; end
     GAME1ST : if(turn_st[1]==3) begin b1_st<=0; gamenstate<=GAME2ST; end else begin b1_st<=1; b0_st<=0; b2_st<=0; b3_st<=0; b4_st<=0; b5_st<=0; gamenstate<=GAME1ST; end
     GAME2ST : if(turn_st[2]==3) begin b2_st<=0; gamenstate<=GAME3ST; end else begin b2_st<=1; b0_st<=0; b1_st<=0; b3_st<=0; b4_st<=0; b5_st<=0; gamenstate<=GAME2ST; end
     GAME3ST : if(turn_st[3]==3) begin b3_st<=0; gamenstate<=GAME4ST; end else begin b3_st<=1; b0_st<=0; b1_st<=0; b2_st<=0; b4_st<=0; b5_st<=0; gamenstate<=GAME3ST; end
     GAME4ST : if(turn_st[4]==3) begin b4_st<=0; gamenstate<=GAME5ST; end else begin b4_st<=1; b0_st<=0; b1_st<=0; b2_st<=0; b3_st<=0; b5_st<=0; gamenstate<=GAME4ST; end
-    GAME5ST : if(turn_st[5]==3) begin b5_st<=0; gamenstate<=SCORINGSTART; move_reset<=0; move_keep<=0; game_set_over <= 1; end else begin b5_st<=1; b0_st<=0; b1_st<=0; b2_st<=0; b3_st<=0; b4_st<=0; gamenstate<=GAME5ST; end
+    GAME5ST : if(turn_st[5]==3) begin b5_st<=0; gamenstate<=SCORINGSTART; end else begin b5_st<=1; b0_st<=0; b1_st<=0; b2_st<=0; b3_st<=0; b4_st<=0; gamenstate<=GAME5ST; end
     SCORINGSTART : gamenstate <=SCORING;
-    SCORING :  if(scoring_ends) gamenstate<=SCORING2;
+    SCORING :  if(scoring_ends==1) begin game_set_over <= 1; gamenstate<=SCORING2;end
                else gamenstate<=SCORING;
-    SCORING2: if(score_reds > score_blues) begin red_win<= 1; blue_win <= 0; draw_flag <=0; game_set_over <= 1; gamenstate<=GAMEEND; end
-              else if (score_reds < score_blues) begin red_win<= 0; blue_win <= 1; draw_flag <=0; game_set_over <= 1; gamenstate<=GAMEEND; end
-              else if (score_reds == score_blues) begin red_win<= 0; blue_win <= 0; draw_flag <=1; game_set_over <= 1; gamenstate<=GAMEEND; end
+    SCORING2: if(whowin==1) begin red_win<= 1; blue_win <= 0; draw_flag <=0;  red_end_box<=1;gamenstate=GAMEEND; end
+              else if(whowin==2) begin red_win<= 0; blue_win <= 1; draw_flag <=0; blue_end_box<=1;gamenstate=GAMEEND; end
+              else if(whowin==0) begin red_win<= 0; blue_win <= 0; draw_flag <=1; draw_end_box<=1; gamenstate=GAMEEND; end
               else gamenstate<=SCORING2;                                   
-    GAMEEND: if(now_turn<FINALROUND) begin move_keep<=1; move_reset<=1; game_set_over <= 1; gamenstate=WAIT; end
-                else if(now_turn>=FINALROUND) begin no_rst<=1; move_keep<=0; move_reset<=1; game_set_over <= 1; gamenstate=WAIT; end 
-                else begin end
-    WAIT : if((key_pulse==5'h1D) && (no_rst==1)) gamenstate <= WAIT;
-           else if((key_pulse==5'h1D) && (no_rst==0)) begin selsig<=1; now_turn<=now_turn+1; gamekeep<=1; move_keep<=1; move_reset<=0; game_set_over<=1;  gamereset<=1; gamenstate<=WAIT2; end
-           else if(key_pulse==5'h1F) begin no_rst<=0; selsig<=1; now_turn<=0;  gamekeep<=0;  move_keep<=0; move_reset<=1; game_set_over<=1; gamereset<=1; gamenstate<= WAIT2; end
-           else gamenstate <= WAIT;
-    WAIT2 : if(stsig)begin selsig<=0;game_set_over<=0; gamenstate<=GAMESTANBY; end else begin game_set_over<=1; gamenstate<=WAIT2; end     
+    GAMEEND: begin move_keep<=1; move_reset<=1; gamenstate<=WAIT; end
+    WAIT : if(key_pulse==5'h1F) begin selrst<=1; now_turn<=0;  move_keep<=0; move_reset<=1; gamereset<=1; gamenstate<= WAIT2; end
+           else if(gamekeepsig==1) begin selkeep<=1; now_turn<=now_turn+1; move_keep<=1; move_reset<=0;gamereset<=1; gamenstate<=WAIT2; end
+           else begin move_keep<=1; move_reset<=1; gamenstate <= WAIT; end
+    WAIT2 : if(stsig)begin selkeep<=0; selrst<=0; game_set_over<=0; gamereset<=1; gamenstate=GAMESTANBY; end else begin gamereset<=1; gamenstate<=WAIT2; end     
     default : gamenstate <=GAMESTANBY;
     endcase
 end
@@ -741,64 +749,64 @@ case(b5_c)
  else begin b0_c <= b0_n; b1_c <= b1_n; b2_c <= b2_n; b3_c <= b3_n; b4_c <= b4_n; b5_c <= b5_n; end
  end   
  
-ball #(.RD_X(85), .RD_Y(200)) ball0(clk, rst, frame_tick, x, y, ball_x[0], ball_y[0],
-key, key_pulse, turn_st[0], ball_on[0], ball_edge[0], hand_on[0], real_edge[0],
+stone #(.RD_X(85), .RD_Y(200)) stone0(clk, rst, frame_tick, x, y, stone_x[0], stone_y[0],
+key, key_pulse, turn_st[0], stone_on[0], stone_edge[0], hand_on[0], real_edge[0],
 sx_in[0], sy_in[0],sx_out[0],sy_out[0],xdir_out[0],ydir_out[0],
-ball_x[1], ball_y[1],sx_out[1],sy_out[1],xdir_out[1],ydir_out[1],
-ball_x[2], ball_y[2],sx_out[2],sy_out[2],xdir_out[2],ydir_out[2],
-ball_x[3], ball_y[3],sx_out[3],sy_out[3],xdir_out[3],ydir_out[3],
-ball_x[4], ball_y[4],sx_out[4],sy_out[4],xdir_out[4],ydir_out[4],
-ball_x[5], ball_y[5],sx_out[5],sy_out[5],xdir_out[5],ydir_out[5],
+stone_x[1], stone_y[1],sx_out[1],sy_out[1],xdir_out[1],ydir_out[1],
+stone_x[2], stone_y[2],sx_out[2],sy_out[2],xdir_out[2],ydir_out[2],
+stone_x[3], stone_y[3],sx_out[3],sy_out[3],xdir_out[3],ydir_out[3],
+stone_x[4], stone_y[4],sx_out[4],sy_out[4],xdir_out[4],ydir_out[4],
+stone_x[5], stone_y[5],sx_out[5],sy_out[5],xdir_out[5],ydir_out[5],
 broom_on_center[0],broom_on_up[0],broom_on_left[0],broom_on_right[0],broom_on_center_design[0], broom_on_up_design[0],fin[0]);
 
-ball #(.RD_X(555), .RD_Y(200)) ball1(clk, rst,frame_tick,x, y, ball_x[1], ball_y[1],
-key, key_pulse, turn_st[1], ball_on[1], ball_edge[1], hand_on[1], real_edge[1],
+stone #(.RD_X(555), .RD_Y(200)) stone1(clk, rst,frame_tick,x, y, stone_x[1], stone_y[1],
+key, key_pulse, turn_st[1], stone_on[1], stone_edge[1], hand_on[1], real_edge[1],
 sx_in[1], sy_in[1],sx_out[1],sy_out[1],xdir_out[1],ydir_out[1],
-ball_x[0], ball_y[0],sx_out[0],sy_out[0],xdir_out[0],ydir_out[0],
-ball_x[2], ball_y[2],sx_out[2],sy_out[2],xdir_out[2],ydir_out[2],
-ball_x[3], ball_y[3],sx_out[3],sy_out[3],xdir_out[3],ydir_out[3],
-ball_x[4], ball_y[4],sx_out[4],sy_out[4],xdir_out[4],ydir_out[4],
-ball_x[5], ball_y[5],sx_out[5],sy_out[5],xdir_out[5],ydir_out[5],
+stone_x[0], stone_y[0],sx_out[0],sy_out[0],xdir_out[0],ydir_out[0],
+stone_x[2], stone_y[2],sx_out[2],sy_out[2],xdir_out[2],ydir_out[2],
+stone_x[3], stone_y[3],sx_out[3],sy_out[3],xdir_out[3],ydir_out[3],
+stone_x[4], stone_y[4],sx_out[4],sy_out[4],xdir_out[4],ydir_out[4],
+stone_x[5], stone_y[5],sx_out[5],sy_out[5],xdir_out[5],ydir_out[5],
 broom_on_center[1],broom_on_up[1],broom_on_left[1],broom_on_right[1],broom_on_center_design[1], broom_on_up_design[1],fin[1]);
 
-ball #(.RD_X(85), .RD_Y(250)) ball2(clk, rst,frame_tick,x, y, ball_x[2], ball_y[2],
-key, key_pulse, turn_st[2], ball_on[2],ball_edge[2], hand_on[2], real_edge[2],
+stone #(.RD_X(85), .RD_Y(250)) stone2(clk, rst,frame_tick,x, y, stone_x[2], stone_y[2],
+key, key_pulse, turn_st[2], stone_on[2],stone_edge[2], hand_on[2], real_edge[2],
 sx_in[2], sy_in[2],sx_out[2],sy_out[2],xdir_out[2],ydir_out[2],
-ball_x[0], ball_y[0],sx_out[0],sy_out[0],xdir_out[0],ydir_out[0],
-ball_x[1], ball_y[1],sx_out[1],sy_out[1],xdir_out[1],ydir_out[1],
-ball_x[3], ball_y[3],sx_out[3],sy_out[3],xdir_out[3],ydir_out[3],
-ball_x[4], ball_y[4],sx_out[4],sy_out[4],xdir_out[4],ydir_out[4],
-ball_x[5], ball_y[5],sx_out[5],sy_out[5],xdir_out[5],ydir_out[5],
+stone_x[0], stone_y[0],sx_out[0],sy_out[0],xdir_out[0],ydir_out[0],
+stone_x[1], stone_y[1],sx_out[1],sy_out[1],xdir_out[1],ydir_out[1],
+stone_x[3], stone_y[3],sx_out[3],sy_out[3],xdir_out[3],ydir_out[3],
+stone_x[4], stone_y[4],sx_out[4],sy_out[4],xdir_out[4],ydir_out[4],
+stone_x[5], stone_y[5],sx_out[5],sy_out[5],xdir_out[5],ydir_out[5],
 broom_on_center[2],broom_on_up[2],broom_on_left[2],broom_on_right[2],broom_on_center_design[2], broom_on_up_design[2],fin[2]);
 
-ball #(.RD_X(555), .RD_Y(250)) ball3(clk, rst,frame_tick,x, y, ball_x[3], ball_y[3],
-key, key_pulse, turn_st[3], ball_on[3],ball_edge[3], hand_on[3], real_edge[3],
+stone #(.RD_X(555), .RD_Y(250)) stone3(clk, rst,frame_tick,x, y, stone_x[3], stone_y[3],
+key, key_pulse, turn_st[3], stone_on[3],stone_edge[3], hand_on[3], real_edge[3],
 sx_in[3], sy_in[3],sx_out[3],sy_out[3],xdir_out[3],ydir_out[3],
-ball_x[0], ball_y[0],sx_out[0],sy_out[0],xdir_out[0],ydir_out[0],
-ball_x[1], ball_y[1],sx_out[1],sy_out[1],xdir_out[1],ydir_out[1],
-ball_x[2], ball_y[2],sx_out[2],sy_out[2],xdir_out[2],ydir_out[2],
-ball_x[4], ball_y[4],sx_out[4],sy_out[4],xdir_out[4],ydir_out[4],
-ball_x[5], ball_y[5],sx_out[5],sy_out[5],xdir_out[5],ydir_out[5],
+stone_x[0], stone_y[0],sx_out[0],sy_out[0],xdir_out[0],ydir_out[0],
+stone_x[1], stone_y[1],sx_out[1],sy_out[1],xdir_out[1],ydir_out[1],
+stone_x[2], stone_y[2],sx_out[2],sy_out[2],xdir_out[2],ydir_out[2],
+stone_x[4], stone_y[4],sx_out[4],sy_out[4],xdir_out[4],ydir_out[4],
+stone_x[5], stone_y[5],sx_out[5],sy_out[5],xdir_out[5],ydir_out[5],
 broom_on_center[3],broom_on_up[3],broom_on_left[3],broom_on_right[3],broom_on_center_design[3], broom_on_up_design[3],fin[3]);
 
-ball #(.RD_X(85), .RD_Y(300)) ball4(clk, rst,frame_tick,x, y, ball_x[4], ball_y[4],
-key, key_pulse, turn_st[4], ball_on[4],ball_edge[4], hand_on[4], real_edge[4],
+stone #(.RD_X(85), .RD_Y(300)) stone4(clk, rst,frame_tick,x, y, stone_x[4], stone_y[4],
+key, key_pulse, turn_st[4], stone_on[4],stone_edge[4], hand_on[4], real_edge[4],
 sx_in[4], sy_in[4],sx_out[4],sy_out[4],xdir_out[4],ydir_out[4],
-ball_x[0], ball_y[0],sx_out[0],sy_out[0],xdir_out[0],ydir_out[0],
-ball_x[1], ball_y[1],sx_out[1],sy_out[1],xdir_out[1],ydir_out[1],
-ball_x[2], ball_y[2],sx_out[2],sy_out[2],xdir_out[2],ydir_out[2],
-ball_x[3], ball_y[3],sx_out[3],sy_out[3],xdir_out[3],ydir_out[3],
-ball_x[5], ball_y[5],sx_out[5],sy_out[5],xdir_out[5],ydir_out[5],
+stone_x[0], stone_y[0],sx_out[0],sy_out[0],xdir_out[0],ydir_out[0],
+stone_x[1], stone_y[1],sx_out[1],sy_out[1],xdir_out[1],ydir_out[1],
+stone_x[2], stone_y[2],sx_out[2],sy_out[2],xdir_out[2],ydir_out[2],
+stone_x[3], stone_y[3],sx_out[3],sy_out[3],xdir_out[3],ydir_out[3],
+stone_x[5], stone_y[5],sx_out[5],sy_out[5],xdir_out[5],ydir_out[5],
 broom_on_center[4],broom_on_up[4],broom_on_left[4],broom_on_right[4],broom_on_center_design[4], broom_on_up_design[4],fin[4]);
 
-ball #(.RD_X(555), .RD_Y(300)) ball5(clk, rst,frame_tick,x, y, ball_x[5], ball_y[5],
-key, key_pulse, turn_st[5], ball_on[5],ball_edge[5], hand_on[5], real_edge[5],
+stone #(.RD_X(555), .RD_Y(300)) stone5(clk, rst,frame_tick,x, y, stone_x[5], stone_y[5],
+key, key_pulse, turn_st[5], stone_on[5],stone_edge[5], hand_on[5], real_edge[5],
 sx_in[5], sy_in[5],sx_out[5],sy_out[5],xdir_out[5],ydir_out[5],
-ball_x[0], ball_y[0],sx_out[0],sy_out[0],xdir_out[0],ydir_out[0],
-ball_x[1], ball_y[1],sx_out[1],sy_out[1],xdir_out[1],ydir_out[1],
-ball_x[2], ball_y[2],sx_out[2],sy_out[2],xdir_out[2],ydir_out[2],
-ball_x[3], ball_y[3],sx_out[3],sy_out[3],xdir_out[3],ydir_out[3],
-ball_x[4], ball_y[4],sx_out[4],sy_out[4],xdir_out[4],ydir_out[4],
+stone_x[0], stone_y[0],sx_out[0],sy_out[0],xdir_out[0],ydir_out[0],
+stone_x[1], stone_y[1],sx_out[1],sy_out[1],xdir_out[1],ydir_out[1],
+stone_x[2], stone_y[2],sx_out[2],sy_out[2],xdir_out[2],ydir_out[2],
+stone_x[3], stone_y[3],sx_out[3],sy_out[3],xdir_out[3],ydir_out[3],
+stone_x[4], stone_y[4],sx_out[4],sy_out[4],xdir_out[4],ydir_out[4],
 broom_on_center[5],broom_on_up[5],broom_on_left[5],broom_on_right[5],broom_on_center_design[5], broom_on_up_design[5],fin[5]);
  
 

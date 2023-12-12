@@ -1,6 +1,6 @@
-verilog xil_defaultlib --include "../../../ipstatic" \
-"../../../../2023TeamProject.gen/sources_1/ip/clk_wiz_0/clk_wiz_0_clk_wiz.v" \
-"../../../../2023TeamProject.gen/sources_1/ip/clk_wiz_0/clk_wiz_0.v" \
+verilog xil_defaultlib --include "../../../../2023TeamProject.gen/sources_1/ip/clk_wiz_0_1" \
+"../../../../2023TeamProject.gen/sources_1/ip/clk_wiz_0_1/clk_wiz_0_clk_wiz.v" \
+"../../../../2023TeamProject.gen/sources_1/ip/clk_wiz_0_1/clk_wiz_0.v" \
 
 verilog xil_defaultlib "glbl.v"
 
