@@ -31,6 +31,5 @@ key_pulse F  : NEXT GAME? 출력 시, 게임 세트 및 점수 reset
 
 작동영상: https://youtu.be/kMXLUSBVb8M
 
-점수 알고리즘 영상:
+충돌 및 점수 알고리즘 영상: https://youtu.be/TDfz1sOkxdo
 
-연쇄충돌영상: 
