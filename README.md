@@ -2,6 +2,11 @@
  2023년 2학기 명지대학교 디지털시스템 2조 고명성, 김영찬, 송윤석
 
  베릴로그를 이용한 미니컬링게임.
+
+ ![image](https://github.com/kms0511/DS_TeamProject2023/assets/148463076/51bd7bde-5b62-4176-90a1-f07a83e671ef)
+
+
+
  
 게임 방법 (키패드는 PMOD C에 PMOD KYPD모듈을 연결하여 사용)
 
