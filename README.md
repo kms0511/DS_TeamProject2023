@@ -88,3 +88,44 @@ https://youtu.be/kMXLUSBVb8M<br>
 ## 충돌 및 점수 알고리즘 영상
 https://youtu.be/TDfz1sOkxdo<br>
   [![Video Label](http://img.youtube.com/vi/TDfz1sOkxdo/0.jpg)](https://youtu.be/TDfz1sOkxdo?t=0s)
+
+# 역할 분담
+# 역할분담
+<table>
+    <tr align=center>
+        <th width=10%></th>
+        <td width=90%>최종 프로젝트 기여<br><a href="https://github.com/KimTeddy/EmbeddedSystem/tree/main/test" target="_blank">ProjectFolder</a></td>
+    </tr>
+    <tr>
+        <th align=center><a href="https://github.com/kms0511"><code>kms0511</code></a><br>(팀장)</th>
+        <td>
+            <ul>
+                <li></li>
+            </ul>
+        </td>
+    </tr>
+    <tr>
+        <th align=center><a href="https://github.com/KimTeddy"><code>KimTeddy</code></a></th>
+        <td>
+            <ul>
+                <li>프로그램 알고리즘</li>
+            </ul>
+        </td>
+    </tr>
+    <tr>
+        <th align=center><a href="https://github.com/HidenSong"><code>HidenSong</code></a></th>
+        <td>
+            <ul>
+                <li>Buzzer 디바이스드라이버 효과음 함수 사용</li>
+            </ul>
+        </td>
+    </tr>
+    <tr>
+        <th>공통</th>
+        <td>
+            <ul>
+                <li>bmp 이미지 제작</li>
+            </ul>
+        </td>
+    </tr>
+</table>
