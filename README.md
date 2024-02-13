@@ -42,7 +42,7 @@ Language:
   <tr>
     <th align=center>Hardware</th>
     <td>
-Kit: <code>Mainboard: Zed Board</code><br>
+Kit: <code>Mainboard: ZedBoard</code><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 <img src="https://www.xilinx.com/content/dam/xilinx/imgs/prime/AES-Z7EV-7Z020-G_xlxlg.jpg" width="18%">
     </td>
