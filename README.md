@@ -83,24 +83,41 @@ Kit: <code>Mainboard: Zed Board</code><br>
 6. 위의 조작방법을 이용하여 표적의 중심에 가까우면서, 자신의 팀의 스톤이 순서대로 최대한 전부 이어지게 하는 것이 게임의 승리 방법이다.
 
 # 작동영상
+<div align=center>
+	
 https://youtu.be/kMXLUSBVb8M<br>
   [![Video Label](http://img.youtube.com/vi/kMXLUSBVb8M/0.jpg)](https://youtu.be/kMXLUSBVb8M?t=0s)
+</div>
+
 ## 충돌 및 점수 알고리즘 영상
+<div align=center>
+	
 https://youtu.be/TDfz1sOkxdo<br>
   [![Video Label](http://img.youtube.com/vi/TDfz1sOkxdo/0.jpg)](https://youtu.be/TDfz1sOkxdo?t=0s)
+</div>
 
-# 역할 분담
 # 역할분담
+<div align=center>
 <table>
     <tr align=center>
         <th width=10%></th>
-        <td width=90%>최종 프로젝트 기여<br><a href="https://github.com/KimTeddy/EmbeddedSystem/tree/main/test" target="_blank">ProjectFolder</a></td>
+        <th width=90%>프로젝트 기여<br><a href="https://github.com/kms0511/DS_TeamProject2023/tree/main/TeamProject/2023TeamProject.srcs/sources_1/new" target="_blank">CodeFolder</a></th>
     </tr>
     <tr>
         <th align=center><a href="https://github.com/kms0511"><code>kms0511</code></a><br>(팀장)</th>
         <td>
             <ul>
-                <li></li>
+                <li><code>keypad.v</code> 키패드 조작</li>
+                <li><code>graph_mod.v</code> 컬링 경기장 레이아웃 제작</li>
+                <li><code>stone.v</code> 게이지 바 및 방향설정</li>
+                <li><code>graph_mod.v</code> 게임 스테이트 머신</li>
+				<ul>
+					<li>스톤에 대한 스테이트 머신</li>
+					<li>스톤을 전부 던진 후의 전체 게임 스테이트 머신 – 3세트 게임으로 제한</li>
+				</ul>
+                <li><code>stone.v</code> 스톤 방향 및 속도 알고리즘</li>
+                <li><code>graph_mod.v</code> 색상 parameter 추가</li>
+                <li>구동 영상 제작</li>
             </ul>
         </td>
     </tr>
@@ -108,7 +125,12 @@ https://youtu.be/TDfz1sOkxdo<br>
         <th align=center><a href="https://github.com/KimTeddy"><code>KimTeddy</code></a></th>
         <td>
             <ul>
-                <li>프로그램 알고리즘</li>
+                <li><code>scoring.v</code> <code>ranker.v</code> <code>distance_t.v</code> 컬링 점수 규칙에 따른 점수 계산 알고리즘</li>
+                <li><code>top.v</code> 색상 12BIT 확장</li>
+                <li><code>graph_mod.v</code> 색상 값 parameter화</li>
+                <li><code>circle.v</code> 기하학을 적용한 원 그리기 모듈</li>
+                <li><code>graph_mod.v</code> 전체 게임 스테이트 부분 수정</li>
+                <li><code>graph_mod.v</code> 타겟(과녁) 디자인</li>
             </ul>
         </td>
     </tr>
@@ -116,7 +138,10 @@ https://youtu.be/TDfz1sOkxdo<br>
         <th align=center><a href="https://github.com/HidenSong"><code>HidenSong</code></a></th>
         <td>
             <ul>
-                <li>Buzzer 디바이스드라이버 효과음 함수 사용</li>
+                <li><code>stone.v</code> 스톤 및 브룸 디자인</li>
+                <li><code>stone.v</code> 브룸 작동 및 가속, 감속 알고리즘</li>
+                <li><code>graph_mod.v</code> 텍스트 출력</li>
+                <li>팀원에게 컬링 점수 규칙 알려줌</li>
             </ul>
         </td>
     </tr>
@@ -124,8 +149,9 @@ https://youtu.be/TDfz1sOkxdo<br>
         <th>공통</th>
         <td>
             <ul>
-                <li>bmp 이미지 제작</li>
+                <li>최종보고서 작성</li>
             </ul>
         </td>
     </tr>
 </table>
+</div>
