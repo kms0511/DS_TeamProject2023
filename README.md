@@ -1,31 +1,61 @@
 # DS_TeamProject2023
- 2023년 2학기 명지대학교 디지털시스템 2조 고명성, 김영찬, 송윤석
-
- 베릴로그를 이용한 미니컬링게임.
-
+<table>
+  <tr>
+    <th align=center>프로젝트명</th>
+    <th>베릴로그를 이용한 미니컬링게임.</th>
+  </tr>
+  <tr>
+    <th align=center width=30%>강의수강</th>
+    <td width=70%>2023.09~12, 2023-2학기 디지털시스템</td>
+  </tr>
+  <tr>
+    <th align=center>주요일정</th>
+    <td>
+     (a) 2023. 12. 12(화) : 프로젝트 검사<br>
+     (b) 2023. 12. 15(금) : 조별최종보고서, 개인별자기평가보고서
+    </td>
+  </tr>
+  <tr>
+    <th align=center>프로젝트 수행기간</th>
+    <td>
+     (c) 최종 프로그램 : 2023. 11. 23 ~ 12. 21[1주(16주차)]<br>
+    </td>
+  </tr>
+  <tr>
+    <th align=center>Software</th>
+    <td>
+Code Editor: <code>Labtop: Vivado</code> <code>Labtop: Visual Studio Code</code><br>
+Language: <code>verilog</code><br>
+    </td>
+  </tr>
+  <tr>
+    <th align=center>Hardware</th>
+    <td>
+Kit: <code>Mainboard: ZEDBOARD</code><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<img src="https://github.com/KimTeddy/EmbeddedSystem/assets/68770209/d6fc3847-ee80-42f3-b7b7-8bf72dc45a95" width="18%">
+    </td>
+  </tr>
+</table>
+<!--2023년 2학기 명지대학교 디지털시스템 2조 고명성, 김영찬, 송윤석-->
  ![image](https://github.com/kms0511/DS_TeamProject2023/assets/148463076/51bd7bde-5b62-4176-90a1-f07a83e671ef)
 
 
 
  
-게임 방법 (키패드는 PMOD C에 PMOD KYPD모듈을 연결하여 사용)
-
+## 게임 방법 (키패드는 PMOD C에 PMOD KYPD모듈을 연결하여 사용)
 키패드 조작:
-
-key_pulse 1 : 세트 시작
-
-key_pulse 2 : 스톤의 위치 및 스핀방향 선택
-
-key_pulse 3 : 스톤에 가할 힘 선택
-
-key_pulse A : 직진 방향으로 스위핑 동작
-
-key_pulse B : 스핀 방향으로 스위핑 동작
-
-key_pulse D : NEXT GAME? 출력 시, 다음 세트의 게임 진행 선택 (점수이어하기)
-
-key_pulse F  : NEXT GAME? 출력 시, 게임 세트 및 점수 reset 
-
+- START
+  - key_pulse 1 : 세트 시작
+- stone
+  - key_pulse 2 : 스톤의 위치 및 스핀방향 선택
+  - key_pulse 3 : 스톤에 가할 힘 선택
+- sweeping
+  - key_pulse A : 직진 방향으로 스위핑 동작
+  - key_pulse B : 스핀 방향으로 스위핑 동작
+- NEXT GAME
+  - key_pulse D : NEXT GAME? 출력 시, 다음 세트의 게임 진행 선택 (점수이어하기)
+  - key_pulse F  : NEXT GAME? 출력 시, 게임 세트 및 점수 reset 
 
 각 세트의 첫 플레이어는 키패드1 을 눌러 세트를 시작한다.
 세트가 시작되면 순서에 맞는 스톤이 대기장소에서 시작라인으로 텔레포트 되며, 좌우 왕복이동을 시작한다. 이 때, 키패드2를 눌러 시작 위치와 스핀방향을 확정하게 된다. 시작위치는 멈춘 그 자리이며, 스핀방향은 멈출 때 이동하고 있던 방향으로 정해진다.
@@ -37,4 +67,3 @@ key_pulse F  : NEXT GAME? 출력 시, 게임 세트 및 점수 reset
 작동영상: https://youtu.be/kMXLUSBVb8M
 
 충돌 및 점수 알고리즘 영상: https://youtu.be/TDfz1sOkxdo
-
